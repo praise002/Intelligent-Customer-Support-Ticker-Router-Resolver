@@ -1,0 +1,44 @@
+[
+  {
+    "url": "synthetic://api-key-invalid",
+    "title": "Troubleshooting Invalid API Key Errors",
+    "content": "\n                Invalid API key errors occur when the provided key is incorrect or expired.\n                \n                Common causes:\n                1. Using test keys in production mode or vice versa\n                2. API key was deleted or regenerated\n                3. Incorrect key format (missing 'sk_' or 'pk_' prefix)\n                \n                Resolution steps:\n                1. Verify you're using the correct key type (test vs live)\n                2. Check the API key in your Stripe Dashboard under Developers > API keys\n                3. Regenerate the key if necessary\n                4. Update your application configuration with the new key\n                5. Ensure no extra spaces or characters in the key\n                \n                Test keys start with sk_test_ or pk_test_\n                Live keys start with sk_live_ or pk_live_\n                ",
+    "doc_type": "authentication"
+  },
+  {
+    "url": "synthetic://webhook-signature-failed",
+    "title": "Webhook Signature Verification Failing",
+    "content": "\n                Webhook signature verification ensures webhooks are sent by Stripe.\n                \n                Common causes:\n                1. Using wrong webhook signing secret\n                2. Timestamp tolerance issues (event too old)\n                3. Request body modification before verification\n                \n                Resolution steps:\n                1. Get the correct signing secret from Dashboard > Developers > Webhooks\n                2. Verify you're using the raw request body (not parsed JSON)\n                3. Check your server's system time is accurate\n                4. Ensure secret starts with 'whsec_'\n                5. Test with Stripe CLI: stripe listen --forward-to localhost:3000/webhook\n                \n                The signature is in the Stripe-Signature header.\n                Use Stripe's library to verify: stripe.webhook.construct_event()\n                ",
+    "doc_type": "webhook"
+  },
+  {
+    "url": "synthetic://500-errors",
+    "title": "Handling 500 Internal Server Errors",
+    "content": "\n                500 errors from Stripe API indicate a problem on Stripe's end.\n                \n                Common scenarios:\n                1. Temporary service disruption\n                2. Rare edge case in request processing\n                \n                Resolution steps:\n                1. Implement retry logic with exponential backoff\n                2. Check Stripe status page: status.stripe.com\n                3. If persistent, contact Stripe support with request ID\n                4. Use idempotency keys to safely retry requests\n                5. Monitor your integration for patterns\n                \n                Best practice: Always implement proper error handling and retries.\n                Stripe recommends retrying with exponential backoff: 1s, 2s, 4s, 8s...\n                ",
+    "doc_type": "error_code"
+  },
+  {
+    "url": "synthetic://payment-failed",
+    "title": "Payment Intent Failed Troubleshooting",
+    "content": "\n                Payment failures can occur for various reasons.\n                \n                Common causes:\n                1. Insufficient funds\n                2. Card declined by issuer\n                3. Authentication required (3D Secure)\n                4. Invalid card details\n                5. Card expired\n                \n                Resolution steps:\n                1. Check the error code in the PaymentIntent object\n                2. For card_declined: Ask customer to contact their bank\n                3. For authentication_required: Implement SCA flow with confirmCardPayment\n                4. For invalid_card: Verify card details are correct\n                5. Use Stripe test cards to debug integration\n                \n                Common error codes:\n                - insufficient_funds: Customer needs to use different payment method\n                - card_declined: Contact card issuer\n                - expired_card: Update card information\n                \n                Error codes reference: https://stripe.com/docs/error-codes\n                ",
+    "doc_type": "payment"
+  },
+  {
+    "url": "synthetic://rate-limits",
+    "title": "API Rate Limit Exceeded",
+    "content": "\n                Stripe enforces rate limits to ensure service stability.\n                \n                Default limits:\n                - 100 requests per second in live mode\n                - 25 requests per second in test mode\n                \n                Resolution steps:\n                1. Implement exponential backoff when receiving 429 errors\n                2. Check Retry-After header for wait time\n                3. Batch requests where possible using Stripe's batch APIs\n                4. Use webhooks instead of polling for updates\n                5. Contact Stripe support to discuss rate limit increases\n                \n                Example retry logic:\n                wait_time = min(60, (2 ** retry_count))\n                \n                Rate limits vary by API endpoint. Most common limit is 100 requests/second.\n                Stripe returns a 429 status code when rate limit is exceeded.\n                ",
+    "doc_type": "general"
+  },
+  {
+    "url": "synthetic://test-vs-live",
+    "title": "Test Mode vs Live Mode Issues",
+    "content": "\n                Stripe has separate test and live modes with different API keys and data.\n                \n                Key differences:\n                1. Test keys: pk_test_*, sk_test_* - for development\n                2. Live keys: pk_live_*, sk_live_* - for production\n                3. Data does NOT transfer between modes\n                4. Test mode has some features disabled\n                \n                Common mistakes:\n                1. Using test API key in production\n                2. Using live API key in development\n                3. Expecting test data to appear in live mode\n                4. Not testing thoroughly before going live\n                \n                Resolution:\n                1. Always use test keys during development\n                2. Never commit live keys to version control\n                3. Use environment variables for API keys\n                4. Test all payment flows in test mode first\n                5. Switch to live keys only when ready for production\n                \n                Test credit cards: Use 4242 4242 4242 4242 for successful payments.\n                ",
+    "doc_type": "authentication"
+  },
+  {
+    "url": "synthetic://idempotency",
+    "title": "Idempotent Requests Best Practices",
+    "content": "\n                Idempotency keys prevent duplicate requests from creating duplicate charges.\n                \n                How it works:\n                Stripe saves the result of your initial request for 24 hours.\n                If you retry with the same key, you get the same result.\n                \n                Best practices:\n                1. Generate unique idempotency key for each operation (use UUID)\n                2. Include key in Idempotency-Key header\n                3. Reuse same key when retrying failed requests\n                4. Generate new key for different operations\n                \n                Example:\n                import uuid\n                idempotency_key = str(uuid.uuid4())\n                \n                stripe.PaymentIntent.create(\n                    amount=1000,\n                    currency='usd',\n                    idempotency_key=idempotency_key\n                )\n                \n                Critical for: payments, refunds, transfers, any financial operation.\n                ",
+    "doc_type": "general"
+  }
+]

@@ -13,7 +13,7 @@ class Ticket(BaseModel):
     subject: str
     description: str
     category: str | None = None
-    priority: str | None = Priority
+    priority: str | None = Priority.MEDIUM
     created_at: datetime = Field(default_factory=datetime.now)
 
 
@@ -66,3 +66,19 @@ class BatchResult(BaseModel):
 
     results: List[TicketResult]
     summary: dict
+
+
+class TicketInput(BaseModel):
+    subject: str
+    description: str
+    priority: str | None = Priority.MEDIUM
+    category: str | None = None
+
+
+class TicketResponse(BaseModel):
+    ticket_id: str
+    action: str
+    confidence: float
+    response: str
+    reasoning: str
+    processing_time: float

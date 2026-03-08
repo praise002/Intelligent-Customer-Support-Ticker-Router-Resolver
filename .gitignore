@@ -163,3 +163,4 @@ cython_debug/
 .vscode
 commands.txt
 rough.py
+chroma_db/
