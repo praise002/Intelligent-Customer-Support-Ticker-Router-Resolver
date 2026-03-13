@@ -8,14 +8,19 @@ from fastapi.responses import RedirectResponse
 from agents.confidence import ConfidenceCalculator
 from agents.generator import LLMGenerator
 from agents.workflow import TicketWorkflow
+from custom_logging import setup_logging
 from scripts.vector_store import VectorStoreManager
+from .routes import router as api_router
 
-version = "1.0.0"
+version = "v1"
+
+setup_logging()
 
 app = FastAPI(
     title="Stripe Support AI",
     description="Intelligent customer support ticket router and resolver",
     version=version,
+    docs_url=f"/api/{version}/docs",
 )
 
 origins = ["http://localhost:5173"]
@@ -31,8 +36,11 @@ app.add_middleware(
 
 app.add_middleware(
     TrustedHostMiddleware,
-    allowed_hosts=["localhost", "127.0.0.1", ".ngrok-free.app"],
+    # allowed_hosts=["localhost", "127.0.0.1", ".ngrok-free.app"],
+    allowed_hosts=["*"]
 )
+
+app.include_router(api_router, prefix=f"/api/{version}")
 
 
 # Custom OpenAPI schema to override 422 validation error response
@@ -138,3 +146,36 @@ async def life_span(app: FastAPI):
 @app.get("/", include_in_schema=False)
 async def root():
     return RedirectResponse(url=f"/api/{version}/docs")
+
+
+# Flow
+# A customer sends an email
+# A ticket is generated with an automatic message
+# The AI responds or it is routed to human in the loop - the customer
+# is informed if it is AI generated and if it is being routed to human
+# See how Turing does theirs
+# All the RAG stuff flow
+# The fastapi stuff flow
+
+# Gmail INBOX (unread)
+#     │
+#     ▼
+# IMAP/Gmail API — fetch raw email
+#     │
+#     ▼
+# Parser — IncomingEmail(external_id, sender, subject, body, timestamp)
+#     │
+#     ▼
+# Mapper — TicketInput(ticket_id, subject, description, priority, category)
+#     │
+#     ▼
+# workflow.process_ticket()  ──── ChromaDB (RAG)
+#     │                      ──── LLM (Groq/NVIDIA)
+#     ▼
+# TicketResult { action, confidence, llm_response }
+#     │
+#     ├── auto_resolve  →  Send reply email back to sender
+#     ├── human_review  →  Log + forward to human
+#     └── escalate      →  Alert + log HIGH priority
+
+# setup db

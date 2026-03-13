@@ -82,11 +82,19 @@ class VectorStoreManager:
         """Split documents into chunks using RecursiveCharacterTextSplitter"""
 
         text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=800,
+            chunk_size=800,  # measured in tokens
             chunk_overlap=200,
             add_start_index=True,
             separators=["\n\n", "\n", ". ", " ", ""],
         )
+        
+        # For sentence transformer
+        # text_splitter = RecursiveCharacterTextSplitter(
+        #     chunk_size=341,  # measured in tokens
+        #     chunk_overlap=80,
+        #     add_start_index=True,
+        #     separators=["\n\n", "\n", ". ", " ", ""],
+        # )
 
         print("Splitting documents into chunks...")
         splits = text_splitter.split_documents(documents)
@@ -183,3 +191,7 @@ if __name__ == "__main__":
         print(f"\n{i}. Relevance: {doc['relevance_score']:.3f}")
         print(f"   Source: {doc['metadata']['title']}")
         print(f"   Content: {doc['content'][:150]}...")
+
+# NOTE: By default, input text longer than 256 word pieces is truncated.
+# fOR SENTENCE TRANSFORMER
+# 341 tokens

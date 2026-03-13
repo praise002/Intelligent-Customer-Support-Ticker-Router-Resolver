@@ -52,6 +52,8 @@ tests:
 random_s:
 	python3 -c "import secrets; print(secrets.token_urlsafe(32))"
 
+ngrok:
+	ngrok http 7000
 # Run all auth tests
 # pytest tests/test_auth/ -v
 
@@ -65,3 +67,4 @@ random_s:
 # # Run with coverage
 # pytest tests/test_auth/test_register.py --cov=src.auth --cov-report=html
 # which python
+# uvicorn main:app --reload --port 3000

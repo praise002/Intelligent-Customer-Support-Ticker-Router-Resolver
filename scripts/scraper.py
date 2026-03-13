@@ -7,7 +7,6 @@ import json
 from pathlib import Path
 from typing import Dict, List
 
-import bs4
 from decouple import config
 from langchain_community.document_loaders import WebBaseLoader
 
@@ -60,18 +59,11 @@ class StripeDocScraper:
 
         print(f"Loading {len(urls)} Stripe documentation pages...")
 
-        # Optional: Use bs4.SoupStrainer to only parse relevant content
-        # This filters out navigation, footers, ads, etc.
-        bs4_strainer = bs4.SoupStrainer(
-            class_=("content", "docs-content", "markdown", "api-reference")
-        )
-
         try:
             # Load all documents at once
             # WebBaseLoader handles requests, parsing, and error handling
             loader = WebBaseLoader(
                 web_paths=urls,
-                bs_kwargs={"parse_only": bs4_strainer},
                 # Add headers to avoid being blocked
                 requests_kwargs={
                     "headers": {
@@ -318,55 +310,23 @@ class StripeDocScraper:
             json.dump(docs, f, indent=2, ensure_ascii=False)
         print(f"💾 Saved {len(docs)} documents to {output_file}")
 
-    # def run(self):
-    #     """Main scraping workflow"""
-    #     print("=" * 60)
-    #     print("Starting Stripe documentation scraping...")
-    #     print("=" * 60)
-
-    #     # Try to scrape real docs using LangChain WebBaseLoader
-    #     scraped_docs = self.scrape_stripe_docs()
-
-    #     # Add synthetic docs as supplement (always include these)
-    #     synthetic_docs = self.create_synthetic_docs()
-
-    #     # Combine both sources
-    #     all_docs = scraped_docs + synthetic_docs
-
-    #     print(f"\n📊 Total documents collected: {len(all_docs)}")
-    #     print(f"   - Scraped from web: {len(scraped_docs)}")
-    #     print(f"   - Synthetic docs: {len(synthetic_docs)}")
-
-    #     # Save combined docs
-    #     self.save_docs(all_docs)
-
-    #     # Print breakdown by type
-    #     doc_types = {}
-    #     for doc in all_docs:
-    #         doc_type = doc.get("doc_type", "unknown")
-    #         doc_types[doc_type] = doc_types.get(doc_type, 0) + 1
-
-    #     print("\n📋 Document breakdown by type:")
-    #     for doc_type, count in sorted(doc_types.items()):
-    #         print(f"   {doc_type}: {count}")
-
-    #     print("=" * 60)
-
-    #     return all_docs
-
     def run(self):
         """Main scraping workflow"""
         print("=" * 60)
         print("Starting Stripe documentation scraping...")
         print("=" * 60)
 
+        # Try to scrape real docs using LangChain WebBaseLoader
+        scraped_docs = self.scrape_stripe_docs()
+
         # Add synthetic docs as supplement (always include these)
         synthetic_docs = self.create_synthetic_docs()
 
         # Combine both sources
-        all_docs = synthetic_docs
+        all_docs = scraped_docs + synthetic_docs
 
         print(f"\n📊 Total documents collected: {len(all_docs)}")
+        print(f"   - Scraped from web: {len(scraped_docs)}")
         print(f"   - Synthetic docs: {len(synthetic_docs)}")
 
         # Save combined docs
@@ -391,7 +351,6 @@ if __name__ == "__main__":
     scraper = StripeDocScraper()
     docs = scraper.run()
 
-    # Print sample of first document
     if docs:
         print("\n📄 Sample from first document:")
         print(f"Title: {docs[0]['title']}")

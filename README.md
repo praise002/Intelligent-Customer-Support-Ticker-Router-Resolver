@@ -1,4 +1,4 @@
-# 🤖 Stripe Support AI - Intelligent Ticket Router & Resolver
+# Intelligent Customer Support Ticket Router & Resolver
 
 An advanced AI-powered customer support system that automatically classifies, resolves, and routes support tickets using multi-signal confidence scoring and LangGraph workflows.
 
@@ -11,39 +11,6 @@ An advanced AI-powered customer support system that automatically classifies, re
 - **LangGraph Workflow**: State machine for reliable ticket processing
 - **Real-time Demo**: Interactive UI showing all three escalation paths
 
-## 📊 Architecture
-
-```
-Incoming Ticket
-     ↓
-┌────────────────────┐
-│  1. Retrieve       │  → ChromaDB vector search (top-5 docs)
-└────────────────────┘
-     ↓
-┌────────────────────┐
-│  2. Generate       │  → LLM creates response (NVIDIA/Groq)
-└────────────────────┘
-     ↓
-┌────────────────────┐
-│  3. Calculate      │  → Multi-signal confidence:
-│     Confidence     │     • Retrieval Quality (40%)
-│                    │     • Semantic Similarity (40%)
-│                    │     • LLM Confidence (20%)
-└────────────────────┘
-     ↓
-┌────────────────────┐
-│  4. Safety         │  → Override rules:
-│     Overrides      │     • Critical keywords → escalate
-│                    │     • High priority → review minimum
-└────────────────────┘
-     ↓
-  ┌──────┴──────┐
-  │   ROUTER    │
-  └──┬───┬────┬─┘
-     │   │    │
-  Auto Review Escalate
-```
-
 ## 🚀 Quick Start
 
 ### Prerequisites
@@ -55,23 +22,21 @@ Incoming Ticket
 ### Installation
 
 ```bash
-# 1. Clone or create project directory
-mkdir stripe-support-ai
-cd stripe-support-ai
+# 1. Clone repository
+git clone <url>
 
 # 2. Create virtual environment
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 
 # 3. Install dependencies
-pip install -r backend/requirements.txt
+pip install -r requirements.txt
 
 # 4. Set up environment variables
-echo "NVIDIA_API_KEY=your_key_here" > .env
-echo "GROQ_API_KEY=your_groq_key_here" >> .env
+cp .env.example .env
 
 # 5. Run setup (scrape docs, create vector store)
-python setup.py
+# python setup.py
 ```
 
 ### Running the Demo
@@ -79,14 +44,11 @@ python setup.py
 ```bash
 # Terminal 1: Start FastAPI backend
 cd backend
-python main.py
+uvicorn src:app --reload
 
 # Terminal 2: Open frontend
-# Simply open frontend/index.html in your browser
-# Or use a simple HTTP server:
 cd frontend
-python -m http.server 8080
-# Then navigate to http://localhost:8080
+npm run dev
 ```
 
 ## 🎬 Demo Scenarios
@@ -134,57 +96,8 @@ final_confidence = (
 | LLM | NVIDIA AI / Groq (Llama 3.1 70B) | Response generation |
 | Workflow | LangGraph | State machine orchestration |
 | API | FastAPI | RESTful backend |
-| Frontend | HTML + Tailwind CSS | Demo interface |
+| Frontend | React + Tailwind CSS | Demo interface |
 
-### API Endpoints
-
-```
-GET  /                    # Health check
-GET  /health              # Detailed system status
-POST /tickets             # Process single ticket
-POST /tickets/batch       # Batch processing
-POST /demo/run            # Run curated demo
-GET  /metrics             # System metrics
-```
-
-## 📁 Project Structure
-
-```
-stripe-support-ai/
-├── backend/
-│   ├── main.py                 # FastAPI application
-│   ├── agents/
-│   │   ├── retriever.py        # (implicit in workflow)
-│   │   ├── generator.py        # LLM response generation
-│   │   ├── confidence.py       # Multi-signal scoring
-│   │   └── workflow.py         # LangGraph state machine
-│   ├── data/
-│   │   ├── scraper.py          # Stripe docs scraper
-│   │   ├── tickets.py          # Demo ticket generator
-│   │   └── vector_store.py     # ChromaDB manager
-│   ├── models/
-│   │   └── schemas.py          # Pydantic models
-│   └── requirements.txt
-├── frontend/
-│   └── index.html              # Demo interface
-├── data/
-│   ├── stripe_docs/            # Scraped documentation
-│   ├── demo_tickets.json       # Curated tickets
-│   ├── test_tickets.json       # Test suite
-│   └── chroma_db/              # Vector embeddings
-├── setup.py                    # Initialization script
-└── README.md
-```
-
-## 🎓 Learning Highlights
-
-### What Makes This Portfolio-Worthy
-
-1. **Production-Grade Architecture**: Multi-signal confidence scoring prevents hallucination
-2. **Real-World Problem**: Solves actual customer support bottleneck (50% auto-resolution target)
-3. **Sophisticated AI**: Beyond basic RAG - confidence calculation, safety overrides, LangGraph
-4. **Measurable Impact**: Clear metrics (auto-resolve rate, accuracy, processing time)
-5. **Safety-First Design**: Critical keyword detection, priority-based overrides
 
 ### Key Challenges Solved
 
@@ -207,33 +120,15 @@ From demo run with curated tickets:
 *Note: Demo uses curated tickets. Real-world performance varies.*
 
 ## 🔮 Future Enhancements
-
-- [ ] Fine-tuned classifier for faster ticket categorization
-- [ ] Integration with Zendesk/Intercom webhooks
-- [ ] A/B testing framework for confidence thresholds
 - [ ] User feedback loop for continuous improvement
-- [ ] Multilingual support
 - [ ] Analytics dashboard with Grafana
-
-## 📝 Interview Talking Points
-
-When presenting this project:
-
-1. **Problem**: "Support teams drown in repetitive tickets; 40% could be auto-resolved but companies fear AI errors"
-   
-2. **Solution**: "Multi-signal confidence scoring catches when LLM is uncertain - safer than pure LLM"
-
-3. **Technical Depth**: "Combines retrieval quality, semantic similarity, and LLM confidence - not just trusting the model"
-
-4. **Business Impact**: "50% auto-resolution means 20 hours/week saved for a team handling 200 tickets/week"
-
-5. **Lessons Learned**: "LLMs will confidently hallucinate - you need validation layers like semantic similarity"
 
 ## 🐛 Troubleshooting
 
 ### Vector store not initialized
 ```bash
-python setup.py  # Re-run setup
+# TODO:
+# python setup.py  # Re-run setup
 ```
 
 ### LLM API errors
@@ -258,6 +153,4 @@ MIT License - feel free to use for your portfolio!
 
 ---
 
-**Built with ❤️ as a portfolio project demonstrating advanced AI engineering**
-
-For questions or feedback, feel free to reach out!
+**Built with ❤️ demonstrating advanced AI engineering**
