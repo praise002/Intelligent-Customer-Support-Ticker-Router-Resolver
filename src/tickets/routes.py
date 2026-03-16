@@ -1,9 +1,11 @@
-
 import logging
 
 from fastapi import APIRouter, Request
 
 from scripts import vector_store
+from src.tickets.schemas import ZendeskWebhookPayload
+from src.tickets.tasks import classify_ticket_task
+
 # from src import initialize_components
 
 # Initialize components (lazy loading)
@@ -13,6 +15,7 @@ confidence_calc = None
 workflow = None
 
 router = APIRouter()
+
 
 @router.get("/health")
 async def health():
@@ -36,21 +39,23 @@ async def health():
 
 
 @router.post("/webhook/ticket-created")
-async def zendesk_webhook(request: Request):
+async def zendesk_webhook(payload: ZendeskWebhookPayload):
     """
-    This endpoint receives webhook notifications from Zendesk
+    This endpoint receives and validates webhook notifications from Zendesk
     """
-    # Get the JSON data sent by Zendesk
-    payload = await request.json()
-    
     logging.info(f"Received webhook: {payload}")
-    
-    # Extract ticket information
-    ticket_id = payload.get("id")
-    subject = payload.get("subject")
-    _ = payload.get("description")
-    
-    # Your processing logic here
+
+    ticket_id = payload.id
+    subject = payload.subject
+    description = payload.description
+
     print(f"New ticket created: {ticket_id} - {subject}")
+    print(f"Description: {description}")
     
+    task = classify_ticket_task.delay(
+        payload.id,
+        payload.subject,
+        payload.description
+    )
+
     return {"status": "received"}

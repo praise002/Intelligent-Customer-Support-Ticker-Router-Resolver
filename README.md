@@ -112,7 +112,7 @@ From demo run with curated tickets:
 
 | Metric | Target | Actual |
 |--------|--------|--------|
-| Auto-Resolution Rate | 50% | 33% (1/3) |
+| Auto-Resolution Rate | 60% | 33% (1/3) |
 | Routing Accuracy | 90%+ | 100% (3/3) |
 | Avg Processing Time | <3s | ~2.1s |
 | False Escalations | <5% | 0% |

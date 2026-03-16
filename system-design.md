@@ -178,11 +178,11 @@ Routes tickets based on confidence score and issue type.
 **Escalation Routing by Issue Type:**
 | Issue Type | Destination |
 |------------|-------------|
-| Billing | #billing-support (Slack) |
-| Technical | #tech-support (Slack) |
-| Account | #security-team (Slack) |
-| Feature | #product-team (Slack) |
-| General | #support-team (Slack) |
+| Billing | #billing-support (Zendesk) |
+| Technical | #tech-support (Zendesk) |
+| Account | #security-team (Zendesk) |
+| Feature | #product-team (Zendesk) |
+| General | #support-team (Zendesk) |
 
 ---
 
@@ -208,7 +208,6 @@ CREATE TABLE tickets (
     subject       TEXT NOT NULL,
     content       TEXT NOT NULL,
     sender        UUID REFERENCES customers(customer_id),
-    status        ENUM('open', 'resolved', 'escalated'), # remove - handles by zendesk
     priority      ENUM('high', 'medium', 'low'),
     issue_type    ENUM('billing', 'technical', 'account', 'feature', 'general'),
     created_at    TIMESTAMP DEFAULT NOW()
@@ -224,12 +223,10 @@ CREATE TABLE responses (
     ticket_id         UUID REFERENCES tickets(ticket_id),
     message           TEXT NOT NULL,
     confidence_score  FLOAT NOT NULL,
-    routing_decision  ENUM('auto_resolve', 'human_review', 'escalate'),
-    assigned_to       TEXT,  -- Slack channel or email
+    routing_decision  ENUM('auto_resolve', 'human_review', 'escalate'),  # update to zendesk
+    assigned_to       TEXT,  -- Group assigned to e.g billing-support
     created_at        TIMESTAMP DEFAULT NOW()
 );
-# remove assigned to - handled by zendesk
-# CReate a team in zendesk to handle whichever support
 ```
 
 ### ChromaDB (Vector Data)

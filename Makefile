@@ -67,4 +67,4 @@ ngrok:
 # # Run with coverage
 # pytest tests/test_auth/test_register.py --cov=src.auth --cov-report=html
 # which python
-# uvicorn main:app --reload --port 3000
+# uvicorn src:app --reload --port 3000
