@@ -4,6 +4,8 @@ from celery import Task
 from celery_config import celery_app
 
 from agents.classifier import TicketClassifier
+from agents.workflow_graph import create_ticket_workflow
+from scripts.vector_store import VectorStoreManager
 from src.utility import get_priority_score
 
 logger = logging.getLogger(__name__)
@@ -58,43 +60,41 @@ def classify_ticket_task(self: Task, ticket_id: int, subject: str, description: 
         raise
 
 
-@celery_app.task(
-    name="tasks.process_llm",
-    bind=True,
-    max_retries=2,
-    autoretry_for=(Exception,),
-    retry_backoff=True,
-    time_limit=300,
-)
+@celery_app.task(bind=True)
 def process_llm_task(
     self: Task, ticket_id: str, subject: str, description: str, classification: dict
 ):
     """
-    Process ticket through LLM (pulled from priority queue)
+    Process ticket through LangGraph workflow.
     """
-    try:
-        urgency = classification["urgency"]
-        issue_type = classification["issue_type"]
+    # Initialize workflow (cached in worker)
+    if not hasattr(self, "workflow"):
+        self.workflow = create_ticket_workflow()
 
-        logger.info(
-            f"🤖 Processing {urgency} priority {issue_type} ticket {ticket_id}..."
-        )
+    # Initialize vector store (cached in worker)
+    if not hasattr(self, "vector_store"):
+        self.vector_store = VectorStoreManager()
 
-        # For now, just simulate LLM processing
-        # Later you'll add: RAG search, LLM generation, confidence calculation
+    query = f"{subject}. {description}"
+    rag_docs = self.vector_store.search(query, top_k=5)
 
-        import time
+    initial_state = {
+        "ticket_id": ticket_id,
+        "subject": subject,
+        "description": description,
+        "classification": classification,
+        "rag_documents": rag_docs,
+        "rag_context": "\n\n".join([d["content"] for d in rag_docs]),
+        "retrieval_score": sum(d["relevance_score"] for d in rag_docs) / len(rag_docs),
+        "retry_count": 0,
+    }
 
-        time.sleep(2)  # Simulate LLM processing (5 seconds in real system)
+    final_state = self.workflow.invoke(initial_state)
 
-        logger.info(f"✅ Ticket {ticket_id} processed successfully")
+    logger.info(
+        f"✅ Ticket {ticket_id} processed: "
+        f"{final_state['routing_decision']} "
+        f"(confidence: {final_state['final_confidence']:.2%})"
+    )
 
-        return {
-            "ticket_id": ticket_id,
-            "classification": classification,
-            "status": "processed",
-        }
-
-    except Exception as e:
-        logger.error(f"❌ LLM processing failed for ticket {ticket_id}: {e}")
-        raise
+    return final_state

@@ -1,6 +1,6 @@
 import logging
 
-from fastapi import APIRouter, Request
+from fastapi import APIRouter
 
 from scripts import vector_store
 from src.tickets.schemas import ZendeskWebhookPayload
@@ -57,5 +57,6 @@ async def zendesk_webhook(payload: ZendeskWebhookPayload):
         payload.subject,
         payload.description
     )
+    print(task)
 
     return {"status": "received"}

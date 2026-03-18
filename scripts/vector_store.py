@@ -264,3 +264,26 @@ class VectorStoreManager:
         """Delete the entire collection (WARNING: Cannot be undone!)"""
         self.vector_store.delete_collection()
         print(f"🗑️ Deleted collection: {self.collection_name}")
+
+    def add_resolved_ticket(
+        self, ticket_id: str, question: str, answer: str, metadata: Dict
+    ):
+        """
+        Add successfully resolved ticket to knowledge base.
+        Feedback loop.
+        """
+        # TODO: DIOES IT MAKE SENSE TO DO THIS OR JUST STORE IN JSON
+        doc = Document(
+            page_content=f"Question: {question}\n\nAnswer: {answer}",
+            metadata={
+                "ticket_id": ticket_id,
+                "source": "resolved_ticket",
+                "issue_type": metadata.get("issue_type"),
+                "confidence": metadata.get("confidence"),
+                "doc_type": "resolved_ticket",
+            },
+        )
+
+        self.vector_store.add_documents([doc])
+
+        print(f"✅ Added ticket {ticket_id} to knowledge base")
