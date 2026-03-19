@@ -32,7 +32,6 @@ class TicketState(TypedDict):
 
     # Routing
     routing_decision: Optional[RoutingDecision]
-    assigned_to: Optional[str]  # Team name if escalated
 
     # Metadata
     error: Optional[str]

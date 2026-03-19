@@ -7,7 +7,6 @@ from agents.zendesk_client import (
     escalate_ticket,
     send_response_to_customer,
 )
-from scripts.vector_store import VectorStoreManager
 from src.tickets.schemas import RoutingDecision
 from src.utility import ConfidenceCalculator
 

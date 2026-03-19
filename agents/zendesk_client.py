@@ -22,6 +22,7 @@ group_map = {
     "technical": config("TECHNICAL_GROUP"),
     "product": config("PRODUCT_GROUP"),
     "account": config("ACCOUNT_GROUP"),
+    "general": config("GENERAL_GROUP"),
     "feature": config("GENERAL_GROUP"),
 }
 

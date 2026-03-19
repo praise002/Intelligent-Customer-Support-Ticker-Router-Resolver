@@ -5,12 +5,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.responses import RedirectResponse
 
-from agents.confidence import ConfidenceCalculator
-from agents.generator import LLMGenerator
-from agents.workflow import TicketWorkflow
 from custom_logging import setup_logging
 from scripts.vector_store import VectorStoreManager
-from .routes import router as api_router
+from src.tickets.routes import router as api_router
 
 version = "v1"
 
@@ -37,7 +34,7 @@ app.add_middleware(
 app.add_middleware(
     TrustedHostMiddleware,
     # allowed_hosts=["localhost", "127.0.0.1", ".ngrok-free.app"],
-    allowed_hosts=["*"]
+    allowed_hosts=["*"],
 )
 
 app.include_router(api_router, prefix=f"/api/{version}")
@@ -129,9 +126,7 @@ def initialize_components():
     if workflow is None:
         print("Initializing AI components...")
         vector_store = VectorStoreManager()
-        llm_generator = LLMGenerator()
-        confidence_calc = ConfidenceCalculator()
-        workflow = TicketWorkflow(vector_store, llm_generator, confidence_calc)
+        # TODO:
         print("✅ Components initialized")
 
 
@@ -146,36 +141,3 @@ async def life_span(app: FastAPI):
 @app.get("/", include_in_schema=False)
 async def root():
     return RedirectResponse(url=f"/api/{version}/docs")
-
-
-# Flow
-# A customer sends an email
-# A ticket is generated with an automatic message
-# The AI responds or it is routed to human in the loop - the customer
-# is informed if it is AI generated and if it is being routed to human
-# See how Turing does theirs
-# All the RAG stuff flow
-# The fastapi stuff flow
-
-# Gmail INBOX (unread)
-#     │
-#     ▼
-# IMAP/Gmail API — fetch raw email
-#     │
-#     ▼
-# Parser — IncomingEmail(external_id, sender, subject, body, timestamp)
-#     │
-#     ▼
-# Mapper — TicketInput(ticket_id, subject, description, priority, category)
-#     │
-#     ▼
-# workflow.process_ticket()  ──── ChromaDB (RAG)
-#     │                      ──── LLM (Groq/NVIDIA)
-#     ▼
-# TicketResult { action, confidence, llm_response }
-#     │
-#     ├── auto_resolve  →  Send reply email back to sender
-#     ├── human_review  →  Log + forward to human
-#     └── escalate      →  Alert + log HIGH priority
-
-# setup db

@@ -88,6 +88,9 @@ database           general   → #support-team
 
 ---
 
+## Workflow diagram
+
+
 ## Core Components
 
 ### 1. Classify
@@ -201,32 +204,35 @@ CREATE TABLE customers (
 ```
 
 **Tickets Table**
-```sql
+```
 CREATE TABLE tickets (
-    ticket_id     UUID PRIMARY KEY,
-    subject       TEXT NOT NULL,
-    content       TEXT NOT NULL,
-    sender        UUID REFERENCES customers(customer_id),
-    priority      ENUM('high', 'medium', 'low'),
-    issue_type    ENUM('billing', 'technical', 'account', 'feature', 'general'),
-    created_at    TIMESTAMP DEFAULT NOW()
-);
-# POST priority and issue type to zendesk
-# Can be done in customize ticket
-```
+    id                  UUID PRIMARY KEY,
+    ticket_id           INT,
+    subject             TEXT NOT NULL,
+    content             TEXT NOT NULL,
+    sender              UUID REFERENCES customers(customer_id),
+    urgency             ENUM('high', 'medium', 'low'),
+    issue_type          ENUM('billing', 'technical', 'account', 'feature', 'general'),
 
-**Responses Table**
-```sql
-CREATE TABLE responses (
-    response_id       UUID PRIMARY KEY,
-    ticket_id         UUID REFERENCES tickets(ticket_id),
-    message           TEXT NOT NULL,
-    confidence_score  FLOAT NOT NULL,
-    routing_decision  ENUM('auto_resolve', 'human_review', 'escalate'),  # update to zendesk
-    assigned_to       TEXT,  -- Group assigned to e.g billing-support
-    created_at        TIMESTAMP DEFAULT NOW()
+    -- From RAG
+    retrieval_score     FLOAT,           -- average similarity from RAG
+
+    -- From LLM generation
+    generated_response  TEXT,            -- what the LLM responded
+    llm_confidence      FLOAT,           -- raw LLM confidence
+
+    -- From confidence calculation
+    semantic_similarity FLOAT,
+    final_confidence    FLOAT,           -- the final computed confidence score
+
+    -- From routing
+    routing_decision    ENUM('auto_resolve', 'human_review', 'escalate'),
+
+    created_at          TIMESTAMP DEFAULT NOW(),
+    updated_at          TIMESTAMP DEFAULT NOW()
 );
 ```
+reopen rate - get the data from zendesk
 
 ### ChromaDB (Vector Data)
 ```
@@ -246,7 +252,7 @@ Collections:
 
 ### Webhook (Event Driven)
 ```
-POST /api/v1/webhooks/zendesk
+POST /api/v1/webhook/ticket-created
 → Receives new ticket from Zendesk instantly
 → Returns 200 OK immediately (async processing)
 → Ticket added to priority queue in background
@@ -257,22 +263,33 @@ Returning 200 immediately prevents Zendesk from timing out during the 5-10 secon
 
 ### REST Endpoints
 ```
-GET   /api/v1/health
-→ Check the health of the API
+GET   /api/v1/health          → Check the health of the API
+<!-- GET   /api/v1/tickets          → Get all tickets --># TODO: THINKING
+GET   /api/v1/stats                  → dashboard metrics
+GET   /api/v1/stats?section=performance → real time metrics
+```
 
-PATCH /api/v1/tickets/{ticket_id}
-→ Agent resolves or updates a ticket
-→ Triggers knowledge base update on resolution
-
-GET   /api/v1/tickets
-→ Retrieve all tickets (React dashboard)
-
-GET   /api/v1/tickets/{ticket_id}
-→ Check specific ticket status
-
-GET   /api/v1/stats
-→ Pre-computed dashboard statistics
-  (resolved count, escalated count, pending count)
+```
+{
+  "business": {
+    "resolution_rate": 0.65,
+    "escalation_rate": 0.35,
+    "reopen_rate": 0.08  # track by zendesk but not assured yet on zn dashboard
+  },
+  "quality": {
+    "avg_tone_empathy": 0.82,
+    "avg_response_quality": 0.79,
+    "avg_faithfulness": 0.85,
+    "avg_groundedness": 0.88,
+    "hallucination_rate": 0.03
+  },
+  "performance": {
+    "avg_latency_seconds": 7.2,
+    "queue_depth": 12,
+    "worker_utilization": 0.54,
+    "uptime": 0.999
+  }
+}
 ```
 
 **Stats endpoint** uses a cron job every 5 minutes to pre-compute counts (materialized view). Real-time accuracy not required for dashboard statistics.

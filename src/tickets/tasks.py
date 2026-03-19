@@ -1,12 +1,12 @@
 import logging
 
 from celery import Task
-from celery_config import celery_app
 
 from agents.classifier import TicketClassifier
-from agents.workflow_graph import create_ticket_workflow
 from scripts.vector_store import VectorStoreManager
 from src.utility import get_priority_score
+
+from .celery_config import celery_app
 
 logger = logging.getLogger(__name__)
 
@@ -67,6 +67,7 @@ def process_llm_task(
     """
     Process ticket through LangGraph workflow.
     """
+    from agents.workflow_graph import create_ticket_workflow
     # Initialize workflow (cached in worker)
     if not hasattr(self, "workflow"):
         self.workflow = create_ticket_workflow()

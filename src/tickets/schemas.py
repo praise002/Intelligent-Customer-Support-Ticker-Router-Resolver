@@ -1,6 +1,6 @@
 from enum import Enum
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, EmailStr, Field
 
 
 class ZendeskWebhookPayload(BaseModel):
@@ -11,6 +11,26 @@ class ZendeskWebhookPayload(BaseModel):
     priority: str
     requester_email: str
     created_at: str
+
+
+class PlanType(Enum):
+    free = "Free"
+    premium = "Premium"
+    enterprise = "Enterprise"
+
+
+class Urgency(Enum):
+    high = "High"
+    medium = "Medium"
+    low = "Low"
+
+
+class IssueType(Enum):
+    billing = "Billing"
+    technical = "Technical"
+    account = "Account"
+    feature = "Feature"
+    general = "General"
 
 
 class RoutingDecision(str, Enum):
@@ -36,12 +56,4 @@ class LLMProvider(str, Enum):
     OPENAI = "openai"
 
 
-# class Ticket(BaseModel):
-#     """Incoming support ticket"""
-
-#     ticket_id: str
-#     subject: str
-#     description: str
-#     category: str | None = None
-#     priority: str | None = Priority.MEDIUM
-#     created_at: datetime = Field(default_factory=datetime.now)
+# TODO: FOR CUSTOMER AND TICKET
