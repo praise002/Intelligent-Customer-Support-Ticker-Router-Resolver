@@ -1,10 +1,7 @@
-from datetime import datetime
 from enum import Enum
-from typing import List, Literal
 
 from pydantic import BaseModel, Field
 
-from constants import Priority
 
 class ZendeskWebhookPayload(BaseModel):
     id: str
@@ -14,25 +11,30 @@ class ZendeskWebhookPayload(BaseModel):
     priority: str
     requester_email: str
     created_at: str
-    
+
+
 class RoutingDecision(str, Enum):
     AUTO_RESOLVE = "auto_resolve"
     HUMAN_REVIEW = "human_review"
     ESCALATE = "escalate"
-    
+
+
 class SupportResponse(BaseModel):
     """Structured response from LLM"""
+
     response: str = Field(description="Helpful answer to the customer")
     confidence: float = Field(
         description="Confidence score 0.0-1.0 that this resolves the issue",
         ge=0.0,
-        le=1.0
+        le=1.0,
     )
-    
+
+
 class LLMProvider(str, Enum):
     NVIDIA = "nvidia"
     GROQ = "groq"
     OPENAI = "openai"
+
 
 # class Ticket(BaseModel):
 #     """Incoming support ticket"""
@@ -43,5 +45,3 @@ class LLMProvider(str, Enum):
 #     category: str | None = None
 #     priority: str | None = Priority.MEDIUM
 #     created_at: datetime = Field(default_factory=datetime.now)
-
-

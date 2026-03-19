@@ -1,9 +1,12 @@
 from langchain_core.messages import HumanMessage, SystemMessage
 
-from agents.escalation import escalate_to_specialist
 from agents.llm_config import get_llm_client
 from agents.workflow_state import TicketState
-from agents.zendesk_client import assign_for_review, send_response_to_customer
+from agents.zendesk_client import (
+    assign_for_review,
+    escalate_ticket,
+    send_response_to_customer,
+)
 from scripts.vector_store import VectorStoreManager
 from src.tickets.schemas import RoutingDecision
 from src.utility import ConfidenceCalculator
@@ -115,17 +118,17 @@ def auto_resolve_node(state: TicketState) -> TicketState:
         ticket_id=state["ticket_id"], response=state["generated_response"]
     )
 
-    # Store in knowledge base (feedback loop from system design)
-    vs = VectorStoreManager()
-    vs.add_resolved_ticket(
-        ticket_id=state["ticket_id"],
-        question=f"{state['subject']}. {state['description']}",
-        answer=state["generated_response"],
-        metadata={
-            "issue_type": state["classification"]["issue_type"],
-            "confidence": state["final_confidence"],
-        },
-    )
+    # Store in database
+    # TODO:
+    # add_resolved_ticket(
+    #     ticket_id=state["ticket_id"],
+    #     question=f"{state['subject']}. {state['description']}",
+    #     answer=state["generated_response"],
+    #     metadata={
+    #         "issue_type": state["classification"]["issue_type"],
+    #         "confidence": state["final_confidence"],
+    #     },
+    # )
 
     state["routing_decision"] = RoutingDecision.AUTO_RESOLVE
 
@@ -139,24 +142,17 @@ def human_review_node(state: TicketState) -> TicketState:
     """
     Assigns ticket to human for review before sending.
     Updates Zendesk with internal note containing draft response.
-
-    Updates state with:
-    - routing_decision = "human_review"
-    - assigned_to = review team name
     """
-
-    # Assign to appropriate review queue
-    review_queue = f"{state['classification']['issue_type']}-review"
 
     assign_for_review(
         ticket_id=state["ticket_id"],
         draft_response=state["generated_response"],
         confidence=state["final_confidence"],
-        queue=review_queue,
+        issue_type=state["classification"]["issue_type"],
+        urgency=state["classification"]["urgency"],
     )
 
     state["routing_decision"] = RoutingDecision.HUMAN_REVIEW
-    state["assigned_to"] = review_queue
 
     return state
 
@@ -167,36 +163,17 @@ def human_review_node(state: TicketState) -> TicketState:
 def escalate_node(state: TicketState) -> TicketState:
     """
     Escalates to specialist team based on issue type.
-    Sends Zendesk notification with context.
-
-    Updates state with:
-    - routing_decision = "escalate"
-    - assigned_to = specialist team name
     """
 
-    # Map issue type to team
-    team_map = {
-        "billing": "billing-support",
-        "technical": "technical-support",
-        "account": "security-team",
-        "feature": "product-team",
-        "general": "support-team",
-    }
-
-    specialist_team = team_map.get(
-        state["classification"]["issue_type"], "support-team"
-    )
-
-    escalate_to_specialist(
+    escalate_ticket(
         ticket_id=state["ticket_id"],
-        team=specialist_team,
-        classification=state["classification"],
+        issue_type=state["classification"]["issue_type"],
         attempted_response=state["generated_response"],
         confidence=state["final_confidence"],
+        urgency=state["classification"]["urgency"],
     )
 
     state["routing_decision"] = RoutingDecision.ESCALATE
-    state["assigned_to"] = specialist_team
 
     return state
 

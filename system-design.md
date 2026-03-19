@@ -81,10 +81,9 @@ Resolve   Review    (by issue type)
   ↓                      ↓
 Send to            billing   → #billing-support
 Customer           technical → #tech-support
-  ↓                account   → #security-team
+  ↓                account   → #account-team
 Store in           feature   → #product-team
-Knowledge          general   → #support-team
-Base
+database           general   → #support-team
 ```
 
 ---
