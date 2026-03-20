@@ -1,30 +1,28 @@
 import logging
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 from sqlmodel.ext.asyncio.session import AsyncSession
 
+from agents.llm_config import get_llm_client
 from scripts import vector_store
 from src.db.main import get_session
+from src.tickets.dependencies import get_vector_store
 from src.tickets.schemas import TicketCreate, ZendeskWebhookPayload
 from src.tickets.service import create_ticket
 from src.tickets.tasks import classify_ticket_task
-
-# from src import initialize_components
-
-# Initialize components (lazy loading)
-vector_store = None
-llm_generator = None
-confidence_calc = None
-workflow = None
 
 router = APIRouter()
 
 
 @router.get("/health")
-async def health():
+async def health(
+    request: Request,
+    vector_store=Depends(get_vector_store),
+    llm_generator=Depends(get_llm_client),
+):
     """Detailed health check"""
     try:
-        # initialize_components()
+
         stats = vector_store.get_collection_stats()
 
         return {
@@ -69,6 +67,3 @@ async def zendesk_webhook(
     await create_ticket(session, ticket_data)
 
     return {"status": "received"}
-
-
-
