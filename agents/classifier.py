@@ -3,7 +3,15 @@ from decouple import config
 from transformers import pipeline
 
 API_URL = "https://router.huggingface.co/hf-inference/models/facebook/bart-large-mnli"
-ISSUE_LABELS = ["billing", "technical", "account", "feature", "general"]
+ISSUE_LABELS = [
+    "account_verification",  # KYC, document issues, account approval
+    "cards",  # All card issues (declined, funding, limits, creation)
+    "transfers",  # Withdrawals, transfers, delays, failed transactions
+    "integrations",  # Upwork, Fiverr, platform linking
+    "fees",  # Pricing, charges, costs
+    "account_access",  # Login, password, 2FA, security
+    "general",  # Everything else
+]
 URGENCY_LABELS = ["high", "medium", "low"]
 
 
@@ -21,19 +29,19 @@ class TicketClassifier:
             use_pipeline: If True, uses local pipeline. If False, uses HF API.
         """
         self.use_pipeline = use_pipeline
-        
+
         if use_pipeline:
             print("Loading local pipeline...")
             self.classifier = pipeline(
-                "zero-shot-classification",
-                model="facebook/bart-large-mnli"
+                "zero-shot-classification", model="facebook/bart-large-mnli"
             )
             print("✅ Pipeline loaded successfully")
         else:
             if not api_token:
-                raise ValueError("Hugging Face API token is required when use_pipeline=False")
+                raise ValueError(
+                    "Hugging Face API token is required when use_pipeline=False"
+                )
             self.headers = {"Authorization": f"Bearer {api_token}"}
-
 
     def _query_hf_api(self, payload: dict) -> dict:
         """Sends a request to the Hugging Face API and returns the JSON response."""
@@ -47,12 +55,12 @@ class TicketClassifier:
         """
         result = self.classifier(text, candidate_labels)
         print(result)
-        
+
         # Pipeline returns: {'labels': [...], 'scores': [...]}
         # We convert to: [{'label': 'billing', 'score': 0.94}, ...]
         formatted = [
             {"label": label, "score": score}
-            for label, score in zip(result['labels'], result['scores'])
+            for label, score in zip(result["labels"], result["scores"])
         ]
         return formatted
 
@@ -81,10 +89,16 @@ class TicketClassifier:
         else:
             print("Classifying with HF API...")
             issue_output = self._query_hf_api(
-                {"inputs": ticket_text, "parameters": {"candidate_labels": ISSUE_LABELS}}
+                {
+                    "inputs": ticket_text,
+                    "parameters": {"candidate_labels": ISSUE_LABELS},
+                }
             )
             urgency_output = self._query_hf_api(
-                {"inputs": ticket_text, "parameters": {"candidate_labels": URGENCY_LABELS}}
+                {
+                    "inputs": ticket_text,
+                    "parameters": {"candidate_labels": URGENCY_LABELS},
+                }
             )
 
         return {
@@ -100,6 +114,6 @@ if __name__ == "__main__":
     classifier = TicketClassifier(api_token=hf_token)
 
     test_ticket = "My credit card was charged twice for the same subscription. Please refund immediately."
-    
+
     result = classifier.classify(test_ticket)
     print(result)

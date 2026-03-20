@@ -122,27 +122,6 @@ Return this exact JSON:
 
 **Why retrieved documents are passed to the judge:** The judge needs the source documents as a reference point to evaluate faithfulness and groundedness. Without them, it cannot verify whether the LLM's response is grounded in the actual knowledge base or hallucinated.
 
-### Routing Based on Judge Score
-
-```
-Judge score
-     ↓
-pass = true  → send response to customer
-pass = false → move to human review queue
-```
-
-### Smart Sampling Strategy
-
-Running the judge on every ticket doubles LLM cost and latency (5s → 10s per ticket). Instead, judge selectively:
-
-```
-High confidence (> 0.85)  → sample 10%
-Medium confidence         → sample 50%
-Low confidence (< 0.6)    → already escalated, skip judge
-```
-
-This balances quality assurance against cost and latency.
-
 ### Using Judge Scores to Improve the System
 
 Judge scores accumulate over time and reveal systematic weaknesses:
@@ -291,24 +270,10 @@ Stats are pre-computed every 1 hour via a cron job (materialized view). Real-tim
 
 ---
 
-## Where Each Layer Lives in the Pipeline
-
-```
-Classify → Queue → RAG Search → LLM Response → Judge → Router → Customer
-   ↑           ↑                               ↑            ↑        ↑
-Unit Test                       Unit Test    Layer 2  Unit Test
-(urgency,                       (latency)    (quality  (routing
-issue type)                                  scoring)  decision)
-
-                                        Performance Metrics collected at every stage
-```
-
----
-
 ## Summary
 
 | Layer | What it tests | When it runs | Cost |
 |-------|--------------|--------------|------|
 | Unit Tests | Code correctness, routing logic, edge cases | Every GitHub push | Free, milliseconds |
-| LLM as Judge | Response tone, quality, faithfulness, groundedness | Sampled per ticket before sending | LLM API cost, ~5s |
+| LLM as Judge | Response tone, quality, faithfulness, groundedness | Sampled on stored ticket, most concern is auto-resolve tickets | LLM API cost, ~5s |
 | Performance Metrics | Business value, system health, AI quality over time | Continuously, aggregated every 1 hour | Negligible |

@@ -54,8 +54,8 @@ class Ticket(SQLModel, table=True):
     subject: str
     content: str
     email: EmailStr
-    urgency: Urgency
-    issue_type = IssueType
+    urgency: Urgency | None = None
+    issue_type: IssueType | None = None
 
     customer_id: uuid.UUID | None = Field(
         default=None,
@@ -72,6 +72,13 @@ class Ticket(SQLModel, table=True):
     final_confidence: float | None = Field(default=None)
 
     routing_decision: RoutingDecision | None = Field(default=None)
+    judge_tone_empathy: float | None = None
+    judge_response_quality: float | None = None
+    judge_faithfulness: float | None = None
+    judge_groundedness: float | None = None
+    judge_overall: float | None = None
+    judge_pass: bool | None = None
+    judge_reason: str | None = None
 
     created_at: Optional[datetime] = Field(
         default=None,

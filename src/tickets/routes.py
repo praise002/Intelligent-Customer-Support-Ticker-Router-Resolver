@@ -1,9 +1,12 @@
 import logging
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from sqlmodel.ext.asyncio.session import AsyncSession
 
 from scripts import vector_store
-from src.tickets.schemas import ZendeskWebhookPayload
+from src.db.main import get_session
+from src.tickets.schemas import TicketCreate, ZendeskWebhookPayload
+from src.tickets.service import create_ticket
 from src.tickets.tasks import classify_ticket_task
 
 # from src import initialize_components
@@ -39,7 +42,9 @@ async def health():
 
 
 @router.post("/webhook/ticket-created")
-async def zendesk_webhook(payload: ZendeskWebhookPayload):
+async def zendesk_webhook(
+    payload: ZendeskWebhookPayload, session: AsyncSession = Depends(get_session)
+):
     """
     This endpoint receives and validates webhook notifications from Zendesk
     """
@@ -51,12 +56,19 @@ async def zendesk_webhook(payload: ZendeskWebhookPayload):
 
     print(f"New ticket created: {ticket_id} - {subject}")
     print(f"Description: {description}")
-    
-    task = classify_ticket_task.delay(
-        payload.id,
-        payload.subject,
-        payload.description
+
+    ticket_data = TicketCreate(
+        ticket_id=payload.id,
+        subject=payload.subject,
+        content=payload.description,
+        email=payload.requester_email,
     )
+
+    task = classify_ticket_task.delay(payload.id, payload.subject, payload.description)
     print(task)
+    await create_ticket(session, ticket_data)
 
     return {"status": "received"}
+
+
+

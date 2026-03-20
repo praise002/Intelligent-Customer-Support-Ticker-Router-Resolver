@@ -6,7 +6,7 @@ An advanced AI-powered customer support system that automatically classifies, re
 
 - **Multi-Signal Confidence Scoring**: Combines retrieval quality, semantic similarity, and LLM confidence
 - **Smart Escalation Logic**: Auto-resolve (>85%), Human Review (60-85%), Escalate (<60%)
-- **RAG-Powered Responses**: Vector search through Stripe API documentation
+- **RAG-Powered Responses**: Vector search through Raenest Support documentation
 - **Safety Overrides**: Critical keyword detection and priority-based routing
 - **LangGraph Workflow**: State machine for reliable ticket processing
 - **Real-time Demo**: Interactive UI showing all three escalation paths

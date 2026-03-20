@@ -1,6 +1,8 @@
+from datetime import datetime
 from enum import Enum
+import uuid
 
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
 
 class ZendeskWebhookPayload(BaseModel):
@@ -26,10 +28,12 @@ class Urgency(Enum):
 
 
 class IssueType(Enum):
-    billing = "Billing"
-    technical = "Technical"
-    account = "Account"
-    feature = "Feature"
+    account_verification = "Account Verification"
+    cards = "cards"
+    transfers = "transfers"
+    integrations = "integrations"
+    fees = "fees"
+    account_access = "account_access"
     general = "General"
 
 
@@ -56,4 +60,51 @@ class LLMProvider(str, Enum):
     OPENAI = "openai"
 
 
-# TODO: FOR CUSTOMER AND TICKET
+class TicketBase(BaseModel):
+    ticket_id: int
+    subject: str
+    content: str
+    email: EmailStr
+    urgency: Urgency
+    issue_type: IssueType
+
+class TicketCreate(TicketBase):
+    pass
+
+class TicketUpdate(BaseModel):
+    retrieval_score: float | None = None
+    generated_response: str | None = None
+    llm_confidence: float | None = None
+    semantic_similarity: float | None = None
+    final_confidence: float | None = None
+    routing_decision: RoutingDecision | None = None
+    judge_tone_empathy: float | None = None
+    judge_response_quality: float | None = None
+    judge_faithfulness: float | None = None
+    judge_groundedness: float | None = None
+    judge_overall: float | None = None
+    judge_pass: bool | None = None
+    judge_reason: str | None = None
+
+class TicketRead(TicketBase):
+    id: uuid.UUID
+    customer_id: uuid.UUID | None
+    created_at: datetime
+    updated_at: datetime
+
+    # AI-populated fields
+    retrieval_score: float | None
+    generated_response: str | None
+    llm_confidence: float | None
+    semantic_similarity: float | None
+    final_confidence: float | None
+    routing_decision: RoutingDecision | None
+    judge_tone_empathy: float | None = None
+    judge_response_quality: float | None = None
+    judge_faithfulness: float | None = None
+    judge_groundedness: float | None = None
+    judge_overall: float | None = None
+    judge_pass: bool | None = None
+    judge_reason: str | None = None
+
+    model_config = ConfigDict(from_attributes=True)

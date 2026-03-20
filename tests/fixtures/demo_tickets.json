@@ -1,0 +1,212 @@
+[
+  {
+    "ticket_id": "TKT-10001",
+    "subject": "Naira withdrawal stuck on 'processing' for 8+ hours",
+    "description": "I initiated a withdrawal to my GTBank account this morning at 8am and it's still showing 'processing'. It's now 5pm. Normally withdrawals are instant. I need this money urgently. Transaction ID: WD-NGN-8472910. This has never happened before in the 2 years I've been using Raenest.",
+    "sender": "chidi.okafor@gmail.com",
+    "urgency": "urgent",
+    "issue_type": "transfers",
+    "created_at": "2025-03-20T09:00:00Z",
+    "expected_classification": {
+      "issue_type": "transfers",
+      "urgency": "high"
+    },
+    "expected_routing": "escalate"
+  },
+  {
+    "ticket_id": "TKT-10002",
+    "subject": "KYC verification pending for 48 hours",
+    "description": "I submitted my documents for verification 2 days ago using Veriff. Status still shows 'pending review'. I uploaded my international passport and utility bill - both are clear and valid. I need my account approved urgently as I'm expecting payment from a client. This is my first time using Raenest and I'm disappointed with the delay.",
+    "sender": "ada.nnamdi@yahoo.com",
+    "urgency": "medium",
+    "issue_type": "account_verification",
+    "created_at": "2025-03-20T10:15:00Z",
+    "expected_classification": {
+      "issue_type": "account_verification",
+      "urgency": "medium"
+    },
+    "expected_routing": "human_review"
+  },
+  {
+    "ticket_id": "TKT-10003",
+    "subject": "Virtual card declined on Netflix payment",
+    "description": "I tried to pay for my Netflix subscription but my Raenest virtual card was declined. I have $150 in my USD wallet so it's not a balance issue. The card worked fine last month. Card last 4 digits: 4782. Error message: 'Your card was declined'. Please help, my subscription expires today.",
+    "sender": "tunde.bakare@outlook.com",
+    "urgency": "high",
+    "issue_type": "cards",
+    "created_at": "2025-03-20T11:30:00Z",
+    "expected_classification": {
+      "issue_type": "cards",
+      "urgency": "high"
+    },
+    "expected_routing": "auto_resolve"
+  },
+  {
+    "ticket_id": "TKT-10004",
+    "subject": "How do I link my Upwork account to receive payments?",
+    "description": "I'm a freelancer on Upwork and I want to receive my payments directly to my Raenest USD account. What bank details should I use? Is there a fee for receiving Upwork payments? How long does it take for the first payment to arrive? I saw something about routing number and account number but I'm not sure where to find these.",
+    "sender": "ngozi.freelance@gmail.com",
+    "urgency": "low",
+    "issue_type": "integrations",
+    "created_at": "2025-03-20T12:00:00Z",
+    "expected_classification": {
+      "issue_type": "integrations",
+      "urgency": "low"
+    },
+    "expected_routing": "auto_resolve"
+  },
+  {
+    "ticket_id": "TKT-10005",
+    "subject": "Money credited to account but not showing in balance",
+    "description": "This is really frustrating! I withdrew $500 from Upwork to my Raenest account. I got the credit alert notification, but when I check my wallet balance, it shows $0. The money is not there. I've been going back and forth with support for 4 days now and they just keep saying 'we're working on it'. I need my money! Transaction date: March 16, 2025. Alert shows successful but balance is empty.",
+    "sender": "emeka.dev@gmail.com",
+    "urgency": "urgent",
+    "issue_type": "transfers",
+    "created_at": "2025-03-20T08:30:00Z",
+    "expected_classification": {
+      "issue_type": "transfers",
+      "urgency": "high"
+    },
+    "expected_routing": "escalate"
+  },
+  {
+    "ticket_id": "TKT-10006",
+    "subject": "Account locked after receiving payment from Germany",
+    "description": "My account was locked after I received $950 from my friend in Germany. I've been receiving money from this same person for months without issues. You asked for documents and I provided everything - invoice, chat screenshots, everything! Now you're saying the account is permanently locked and won't release my money or send it back to the sender. This is theft! I've been emailing support for 3 weeks with no proper response.",
+    "sender": "blessing.trade@gmail.com",
+    "urgency": "urgent",
+    "issue_type": "account_access",
+    "created_at": "2025-03-20T07:45:00Z",
+    "expected_classification": {
+      "issue_type": "account_access",
+      "urgency": "high"
+    },
+    "expected_routing": "escalate"
+  },
+  {
+    "ticket_id": "TKT-10007",
+    "subject": "What are the fees for withdrawing to Nigerian bank?",
+    "description": "I want to convert my USD to Naira and withdraw to my local bank account. How much does Raenest charge for this? Are there hidden fees? What's the exchange rate you use? I want to know the total cost before I proceed.",
+    "sender": "kunle.invest@gmail.com",
+    "urgency": "low",
+    "issue_type": "fees",
+    "created_at": "2025-03-20T13:00:00Z",
+    "expected_classification": {
+      "issue_type": "fees",
+      "urgency": "low"
+    },
+    "expected_routing": "auto_resolve"
+  },
+  {
+    "ticket_id": "TKT-10008",
+    "subject": "Card creation failed - 'insufficient funds' error",
+    "description": "I'm trying to create a USD virtual card but it keeps showing 'insufficient funds' error. I have $200 in my USD wallet. I've tried 5 times and it's not working. Do I need to pay a fee to create the card? If yes, how much? The app doesn't explain anything, it just keeps showing error.",
+    "sender": "femi.graphics@yahoo.com",
+    "urgency": "medium",
+    "issue_type": "cards",
+    "created_at": "2025-03-20T14:20:00Z",
+    "expected_classification": {
+      "issue_type": "cards",
+      "urgency": "medium"
+    },
+    "expected_routing": "human_review"
+  },
+  {
+    "ticket_id": "TKT-10009",
+    "subject": "GBP account application rejected - need explanation",
+    "description": "My application to open a GBP account was rejected but I don't understand why. I used the exact same documents that were approved for my USD account - my international passport and bank statement. Why was USD approved but GBP rejected? I need a proper explanation, not just 'internal assessment'. I'm a legitimate freelancer receiving payments from UK clients.",
+    "sender": "yemi.writer@gmail.com",
+    "urgency": "medium",
+    "issue_type": "account_verification",
+    "created_at": "2025-03-20T15:00:00Z",
+    "expected_classification": {
+      "issue_type": "account_verification",
+      "urgency": "medium"
+    },
+    "expected_routing": "human_review"
+  },
+  {
+    "ticket_id": "TKT-10010",
+    "subject": "Can't login to my account - 2FA not working",
+    "description": "I can't access my account. When I try to login, it asks for 2FA code but I'm not receiving any SMS. I've tried multiple times. My phone number is correct: +234 803 XXX XXXX. I have $1,200 in my account and I need to make a payment today. Please help urgently!",
+    "sender": "ola.business@gmail.com",
+    "urgency": "urgent",
+    "issue_type": "account_access",
+    "created_at": "2025-03-20T16:00:00Z",
+    "expected_classification": {
+      "issue_type": "account_access",
+      "urgency": "high"
+    },
+    "expected_routing": "escalate"
+  },
+  {
+    "ticket_id": "TKT-10011",
+    "subject": "Failed card transaction - money deducted but payment unsuccessful",
+    "description": "I tried to pay for Google Ads with my Raenest virtual card. The transaction failed but $50 was deducted from my wallet. I checked my Google Ads account and the payment didn't go through. So where is my $50? I need a refund immediately. Transaction timestamp: 2025-03-20 10:15 AM.",
+    "sender": "david.marketing@gmail.com",
+    "urgency": "high",
+    "issue_type": "cards",
+    "created_at": "2025-03-20T10:30:00Z",
+    "expected_classification": {
+      "issue_type": "cards",
+      "urgency": "high"
+    },
+    "expected_routing": "human_review"
+  },
+  {
+    "ticket_id": "TKT-10012",
+    "subject": "How to link Fiverr account for payments",
+    "description": "I sell graphic design services on Fiverr. I want to receive my Fiverr earnings directly to my Raenest account. Is this possible? What details do I need to provide on Fiverr? Are there any fees?",
+    "sender": "grace.designer@gmail.com",
+    "urgency": "low",
+    "issue_type": "integrations",
+    "created_at": "2025-03-20T17:00:00Z",
+    "expected_classification": {
+      "issue_type": "integrations",
+      "urgency": "low"
+    },
+    "expected_routing": "auto_resolve"
+  },
+  {
+    "ticket_id": "TKT-10013",
+    "subject": "Refund request - payment sent to wrong account",
+    "description": "I mistakenly sent $300 to the wrong Raenest account. I typed the wrong Raenest tag. The transaction was completed 2 hours ago. Can you reverse this transaction? The correct tag should be @correctuser123 but I sent to @wronguser456. Transaction ID: TRF-8392014. This is urgent please!",
+    "sender": "john.mistake@gmail.com",
+    "urgency": "urgent",
+    "issue_type": "transfers",
+    "created_at": "2025-03-20T11:00:00Z",
+    "expected_classification": {
+      "issue_type": "transfers",
+      "urgency": "high"
+    },
+    "expected_routing": "escalate"
+  },
+  {
+    "ticket_id": "TKT-10014",
+    "subject": "KYC rejected - 'document quality' reason",
+    "description": "My KYC was rejected with reason 'document quality issue'. But I scanned my passport in high resolution, all corners are visible, text is clear, and it's not expired (valid until 2028). What exactly is wrong with my document? I need specific feedback so I can fix it and resubmit. This is the third time I'm trying.",
+    "sender": "precious.samuel@gmail.com",
+    "urgency": "medium",
+    "issue_type": "account_verification",
+    "created_at": "2025-03-20T09:30:00Z",
+    "expected_classification": {
+      "issue_type": "account_verification",
+      "urgency": "medium"
+    },
+    "expected_routing": "human_review"
+  },
+  {
+    "ticket_id": "TKT-10015",
+    "subject": "What's the daily limit for virtual card spending?",
+    "description": "I need to make a large purchase on Amazon ($800). What's the daily spending limit on Raenest virtual cards? Can I increase it? Also, does the card work on all international websites?",
+    "sender": "ahmed.shopper@gmail.com",
+    "urgency": "low",
+    "issue_type": "cards",
+    "created_at": "2025-03-20T18:00:00Z",
+    "expected_classification": {
+      "issue_type": "cards",
+      "urgency": "low"
+    },
+    "expected_routing": "auto_resolve"
+  }
+]

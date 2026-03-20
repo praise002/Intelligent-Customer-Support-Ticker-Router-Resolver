@@ -1,23 +1,55 @@
+import logging
 from contextlib import asynccontextmanager
 
+from decouple import config
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.responses import RedirectResponse
 
+from agents.classifier import TicketClassifier
+from agents.llm_config import get_llm_client
+from agents.workflow_graph import create_ticket_workflow
 from custom_logging import setup_logging
 from scripts.vector_store import VectorStoreManager
 from src.tickets.routes import router as api_router
+from src.utility import ConfidenceCalculator
 
 version = "v1"
 
 setup_logging()
 
+app_state = {}
+
+def initialize_components():
+    """Initialize AI components (only once)"""
+    # Initialize all heavy components once
+    logging.info("Initializing AI components...")
+    app_state["llm_client"] = get_llm_client()
+    app_state["vector_store"] = VectorStoreManager()
+    app_state["confidence_calculator"] = ConfidenceCalculator()
+    app_state["ticket_classifier"] = TicketClassifier(
+        api_token=config("NVIDIA_API_KEY_2")
+    )
+    app_state["workflow"] = create_ticket_workflow()
+    logging.info("AI components initialized successfully.")
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await initialize_components()
+    print("Server is starting...")
+    yield
+    app_state.clear()
+    print("Server has been stopped...")
+
+
 app = FastAPI(
-    title="Stripe Support AI",
+    title="Raenest Support AI",
     description="Intelligent customer support ticket router and resolver",
     version=version,
     docs_url=f"/api/{version}/docs",
+    lifespan=lifespan,
 )
 
 origins = ["http://localhost:5173"]
@@ -117,25 +149,6 @@ def custom_openapi():
 
 # Override FastAPI's openapi method
 app.openapi = custom_openapi
-
-
-def initialize_components():
-    """Initialize AI components (only once)"""
-    global vector_store, llm_generator, confidence_calc, workflow
-
-    if workflow is None:
-        print("Initializing AI components...")
-        vector_store = VectorStoreManager()
-        # TODO:
-        print("✅ Components initialized")
-
-
-@asynccontextmanager
-async def life_span(app: FastAPI):
-    await initialize_components()
-    print("Server is starting...")
-    yield
-    print("Server has been stopped...")
 
 
 @app.get("/", include_in_schema=False)

@@ -18,12 +18,13 @@ CUSTOM_FIELD_ISSUE_TYPE_ID = config("ZENDESK_CUSTOM_FIELD_ISSUE_TYPE")
 
 # Map issue type to Zendesk group ID
 group_map = {
-    "billing": config("BILLING_GROUP"),
-    "technical": config("TECHNICAL_GROUP"),
-    "product": config("PRODUCT_GROUP"),
-    "account": config("ACCOUNT_GROUP"),
-    "general": config("GENERAL_GROUP"),
-    "feature": config("GENERAL_GROUP"),
+    "account_verification": config("VERIFICATION_TEAM_GROUP_ID"),  # KYC specialists
+    "cards": config("CARDS_TEAM_GROUP_ID"),  # Card support team
+    "transfers": config("TRANSFERS_TEAM_GROUP_ID"),  # Payments team
+    "integrations": config("INTEGRATIONS_TEAM_GROUP_ID"),  # Integration specialists
+    "fees": config("GENERAL_SUPPORT_GROUP_ID"),  # General support (FAQ)
+    "account_access": config("SECURITY_TEAM_GROUP_ID"),  # Security/access team
+    "general": config("GENERAL_SUPPORT_GROUP_ID"),  # Catch-all
 }
 
 # Set priority based on urgency
