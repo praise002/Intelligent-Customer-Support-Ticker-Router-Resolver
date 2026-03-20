@@ -1,52 +1,267 @@
 <!DOCTYPE html>
-<html>
-<body style="font-family: Arial; max-width: 600px; margin: 50px auto; padding: 20px;">
-  <h1>📧 Submit Support Ticket</h1>
-  <form id="form">
-    <div style="margin: 15px 0;">
-      <label>Name:</label><br>
-      <input type="text" name="name" style="width: 100%; padding: 8px;" required>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Raenest Support</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      max-width: 500px;
+      width: 100%;
+      padding: 40px;
+      animation: slideUp 0.5s ease;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      color: #1a1a1a;
+      margin-bottom: 8px;
+    }
+
+    .header p {
+      color: #666;
+      font-size: 14px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 15px;
+      transition: all 0.3s ease;
+      font-family: inherit;
+    }
+
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+
+    .submit-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 10px;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+    }
+
+    .submit-btn:active {
+      transform: translateY(0);
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .message {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 10px;
+      font-size: 14px;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .message.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .message.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 0.6s linear infinite;
+      margin-left: 8px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 30px 20px;
+      }
+
+      .header h1 {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>💬 Get Help</h1>
+      <p>We'll get back to you as soon as possible</p>
     </div>
-    <div style="margin: 15px 0;">
-      <label>Email:</label><br>
-      <input type="email" name="email" style="width: 100%; padding: 8px;" required>
-    </div>
-    <div style="margin: 15px 0;">
-      <label>Subject:</label><br>
-      <input type="text" name="subject" style="width: 100%; padding: 8px;" required>
-    </div>
-    <div style="margin: 15px 0;">
-      <label>Message:</label><br>
-      <textarea name="message" rows="5" style="width: 100%; padding: 8px;" required></textarea>
-    </div>
-    <button type="submit" style="background: #007bff; color: white; padding: 12px 30px; border: none; cursor: pointer;">
-      Submit Ticket
-    </button>
-  </form>
-  <div id="msg"></div>
+
+    <form id="ticketForm">
+      <div class="form-group">
+        <label for="name">Your Name</label>
+        <input type="text" id="name" name="name" placeholder="John Doe" required>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="email" placeholder="you@example.com" required>
+      </div>
+
+      <div class="form-group">
+        <label for="subject">Subject</label>
+        <input type="text" id="subject" name="subject" placeholder="What do you need help with?" required>
+      </div>
+
+      <div class="form-group">
+        <label for="message">Message</label>
+        <textarea id="message" name="message" placeholder="Describe your issue in detail..." required></textarea>
+      </div>
+
+      <button type="submit" class="submit-btn" id="submitBtn">
+        Submit Ticket
+      </button>
+    </form>
+
+    <div id="messageBox"></div>
+  </div>
 
   <script>
-    document.getElementById('form').onsubmit = async (e) => {
+    const form = document.getElementById('ticketForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const messageBox = document.getElementById('messageBox');
+
+    form.onsubmit = async (e) => {
       e.preventDefault();
+
+      // Disable button and show loading
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = 'Submitting<span class="spinner"></span>';
+      messageBox.innerHTML = '';
+
       const data = {
-        name: e.target.name.value,
-        email: e.target.email.value,
+        // ticket_id: `TKT-${Date.now()}`,  
         subject: e.target.subject.value,
-        message: e.target.message.value
+        description: e.target.message.value,
+        sender: e.target.email.value,
+        customer_name: e.target.name.value
       };
 
+      try {
+        // const url = 'https://n8npraizdev.dpdns.org/webhook-test/support-ticket';
+        const url = 'http://localhost:8000/api/v1/webhook/ticket-created';
+        // Production: 'https://support-agent.praizdev.com/api/v1/webhook/ticket-created'
 
-      const url = 'https://n8npraizdev.dpdns.org/webhook-test/support-ticket';
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
 
-      const res = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      });
+        if (!res.ok) {
+          throw new Error('Failed to submit ticket');
+        }
 
-      document.getElementById('msg').innerHTML =
-        '<p style="color: green; margin-top: 20px;">✅ Ticket submitted successfully!</p>';
-      e.target.reset();
+        // Success
+        messageBox.innerHTML = `
+          <div class="message success">
+            ✅ Ticket submitted successfully! We'll get back to you soon.
+          </div>
+        `;
+        form.reset();
+
+      } catch (error) {
+        // Error
+        messageBox.innerHTML = `
+          <div class="message error">
+            ❌ Failed to submit ticket. Please try again or email support@raenest.com
+          </div>
+        `;
+      } finally {
+        // Re-enable button
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = 'Submit Ticket';
+      }
     };
   </script>
 </body>

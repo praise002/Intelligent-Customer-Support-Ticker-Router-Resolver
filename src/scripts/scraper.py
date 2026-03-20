@@ -8,7 +8,7 @@ from langchain_community.document_loaders import WebBaseLoader
 
 
 class RaenestDocScraper:
-    def __init__(self, output_dir: str = "data/raenest_docs"):
+    def __init__(self, output_dir: str = "data"):
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
 

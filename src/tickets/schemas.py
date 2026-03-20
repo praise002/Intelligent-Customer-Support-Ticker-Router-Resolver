@@ -1,6 +1,6 @@
+import uuid
 from datetime import datetime
 from enum import Enum
-import uuid
 
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
@@ -19,6 +19,12 @@ class PlanType(Enum):
     free = "Free"
     premium = "Premium"
     enterprise = "Enterprise"
+
+
+class Priority(Enum):
+    HIGH = "high"
+    MEDIUM = "medium"
+    LOW = "low"
 
 
 class Urgency(Enum):
@@ -68,8 +74,10 @@ class TicketBase(BaseModel):
     urgency: Urgency
     issue_type: IssueType
 
+
 class TicketCreate(TicketBase):
     pass
+
 
 class TicketUpdate(BaseModel):
     retrieval_score: float | None = None
@@ -85,6 +93,7 @@ class TicketUpdate(BaseModel):
     judge_overall: float | None = None
     judge_pass: bool | None = None
     judge_reason: str | None = None
+
 
 class TicketRead(TicketBase):
     id: uuid.UUID
