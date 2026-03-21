@@ -1,5 +1,3 @@
-from typing import Dict, List
-
 INJECTION_PATTERNS = [
     r"ignore (all|previous|above) (instructions|prompts|rules)",
     r"system prompt",

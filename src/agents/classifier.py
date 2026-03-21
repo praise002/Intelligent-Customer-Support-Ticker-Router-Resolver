@@ -1,5 +1,4 @@
 import requests
-from decouple import config
 from transformers import pipeline
 
 API_URL = "https://router.huggingface.co/hf-inference/models/facebook/bart-large-mnli"
@@ -107,13 +106,3 @@ class TicketClassifier:
             "issue_score": round(issue_output[0]["score"], 4),
             "urgency_score": round(urgency_output[0]["score"], 4),
         }
-
-
-if __name__ == "__main__":
-    hf_token = config("HF_TOKEN")
-    classifier = TicketClassifier(api_token=hf_token)
-
-    test_ticket = "My credit card was charged twice for the same subscription. Please refund immediately."
-
-    result = classifier.classify(test_ticket)
-    print(result)

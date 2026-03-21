@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# Stop the script immediately if any command fails
+set -e
+
+
+./wait-for-it.sh db:5432 -- echo "PostgreSQL is ready!"
+
+./wait-for-it.sh redis:6379 -- echo "✅ Redis is ready!"
+
+# Apply migrations - Only run Django management commands for web service
+if [ "$SERVICE_TYPE" = "web" ]; then
+  echo "🚀 Starting FastAPI server..."
+  alembic upgrade head
+  exec uvicorn src.app --host 0.0.0.0 --port 8000 --reload
+  
+elif [ "$SERVICE_TYPE" = "celery" ] || [ "$SERVICE_TYPE" = "celery-beat" ]; then
+  echo "Waiting for FastAPI to be ready..."
+  while ! curl -s http://web:8000/api/v1/health >/dev/null; do
+    echo "FastAPI not ready. Retrying in 5s..."
+    sleep 5
+  done
+  
+  if [ "$SERVICE_TYPE" = "celery" ]; then
+    exec celery -A src.tickets.celery_config worker --loglevel=info --concurrency=3
+  else
+    exec celery -A src.tickets.celery_config beat --loglevel=info
+  fi
+fi
+
+# Execute the command passed to the script
+echo "Executing: $@"
+exec "$@"

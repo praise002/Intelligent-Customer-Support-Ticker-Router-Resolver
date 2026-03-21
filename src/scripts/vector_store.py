@@ -49,7 +49,7 @@ class VectorStoreManager:
 
     def __init__(
         self,
-        collection_name: str = "stripe_docs",
+        collection_name: str = "raenest_docs",
         persist_directory: str = "data/chroma_db",
         embedding_provider: Optional[EmbeddingProvider] = None,
     ):
@@ -186,7 +186,7 @@ class VectorStoreManager:
 
     def load_and_index_documents(
         self,
-        docs_file: str = "data/stripe_docs/stripe_docs.json",
+        docs_file: str = "data/raenest_docs.json",
         batch_size: int = 100,
     ):
         """Load documents from JSON and index them in vector store"""
@@ -287,5 +287,9 @@ class VectorStoreManager:
 
         print(f"✅ Added ticket {ticket_id} to knowledge base")
 
+
+if __name__ == "__main__":
+    vector_store = VectorStoreManager()
+    vector_store.load_and_index_documents()
+    
 # To call this fn, I have to first judge it b4 adding it to the vector store
-# {{agent.signature}}

@@ -1,4 +1,4 @@
-from agents.workflow_graph import create_ticket_workflow
+from src.agents.workflow_graph import create_ticket_workflow
 
 
 def generate_workflow_diagram():

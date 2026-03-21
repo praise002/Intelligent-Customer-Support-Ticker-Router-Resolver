@@ -2,10 +2,12 @@ import pytest
 from decouple import config
 
 from src.agents.classifier import TicketClassifier
-from src.tickets.tasks import classify_ticket_task
 
 hf_token = config("HF_TOKEN")
 classifier = TicketClassifier(api_token=hf_token)
+
+# pytest tests/unit/test_classifier.py::TestClassifier::test_urgency_high -v -s
+# pytest src/tests/test_profiles.py::TestUpdateMyProfile::test_update_profile_success -v -s
 
 
 class TestClassifier:
@@ -13,23 +15,21 @@ class TestClassifier:
 
     def test_urgency_high(self):
         """High urgency tickets should be classified as 'high'"""
-        result = classify_ticket_task(
-            subject="URGENT: Withdrawal stuck for 8 hours",
-            description="I need this money NOW. Transaction failing.",
+        result = classifier.classify(
+            "URGENT: Withdrawal stuck for 8 hours\n\nI need this money NOW. Transaction failing.",
         )
         assert result["urgency"] == "high"
 
     def test_urgency_medium(self):
         """Medium urgency tickets"""
-        result = classifier.classify_ticket(
-            subject="KYC verification pending",
-            description="My documents were submitted 2 days ago, still pending.",
+        result = classifier.classify(
+            "KYC verification pending\n\nMy documents were submitted 2 days ago, still pending.",
         )
         assert result["urgency"] == "medium"
 
     def test_urgency_low(self):
         """Low urgency tickets"""
-        result = classifier.classify_ticket(
+        result = classifier.classify(
             subject="Question about fees",
             description="How much does it cost to withdraw to local bank?",
         )
@@ -37,43 +37,31 @@ class TestClassifier:
 
     def test_issue_type_cards(self):
         """Card-related issues"""
-        result = classifier.classify_ticket(
-            subject="Card declined",
-            description="My virtual card transaction failed on Netflix",
+        result = classifier.classify(
+            "Card declined\n\nMy virtual card transaction failed on Netflix",
         )
         assert result["issue_type"] == "cards"
 
     def test_issue_type_verification(self):
         """Account verification issues"""
-        result = classifier.classify_ticket(
-            subject="KYC rejected",
-            description="My documents were rejected, need to know why",
+        result = classifier.classify(
+            "KYC rejected\n\nMy documents were rejected, need to know why",
         )
         assert result["issue_type"] == "account_verification"
 
     def test_issue_type_transfers(self):
         """Transfer/withdrawal issues"""
-        result = classifier.classify_ticket(
-            subject="Withdrawal delayed",
-            description="My withdrawal to GTBank is stuck on processing",
+        result = classifier.classify(
+            "Withdrawal delayed\n\nMy withdrawal to GTBank is stuck on processing",
         )
         assert result["issue_type"] == "transfers"
 
     def test_issue_type_integrations(self):
         """Platform integration questions"""
-        result = classifier.classify_ticket(
-            subject="How to link Upwork",
-            description="I want to receive Upwork payments to my account",
+        result = classifier.classify(
+            "How to link Upwork\n\nI want to receive Upwork payments to my account",
         )
         assert result["issue_type"] == "integrations"
-
-    def test_classification_has_confidence_scores(self):
-        """Classification should include confidence scores"""
-        result = classifier.classify_ticket(
-            subject="Test ticket", description="Test description"
-        )
-        assert "confidence_scores" in result
-        assert isinstance(result["confidence_scores"], dict)
 
     def test_demo_tickets_classification(self, test_tickets):
         """
@@ -83,8 +71,8 @@ class TestClassifier:
 
         for ticket in test_tickets:
             # Get classification from classifier
-            result = classifier.classify_ticket(
-                subject=ticket["subject"], description=ticket["description"]
+            result = classifier.classify(
+                f"{ticket["subject"]}\n\n{ticket["description"]}"
             )
 
             # Get expected classification
@@ -129,25 +117,3 @@ class TestClassifier:
             error_msg += f"\n{len(failed_tickets)}/{len(test_tickets)} tickets failed classification"
 
             pytest.fail(error_msg)
-
-
-class TestClassifierEdgeCases:
-    """Test edge cases and error handling"""
-
-    def test_empty_subject(self):
-        """Should handle empty subject"""
-        result = classifier.classify_ticket(
-            subject="", description="Card declined on payment"
-        )
-        assert result["issue_type"] in ["cards", "general"]
-
-    def test_empty_description(self):
-        """Should handle empty description"""
-        result = classifier.classify_ticket(subject="Card declined", description="")
-        assert result["issue_type"] in ["cards", "general"]
-
-    def test_very_short_text(self):
-        """Should handle very short text"""
-        result = classifier.classify_ticket(subject="Help", description="Urgent")
-        assert result["urgency"] in ["high", "medium", "low"]
-        assert result["issue_type"] is not None

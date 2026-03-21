@@ -1,14 +1,12 @@
 import asyncio
-from datetime import datetime, timedelta, timezone
 import json
 from typing import AsyncGenerator
 
 import pytest
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
-from sqlalchemy.orm import selectinload
 from sqlalchemy.pool import NullPool
-from sqlmodel import SQLModel, select
+from sqlmodel import SQLModel
 from sqlmodel.ext.asyncio.session import AsyncSession
 from zipp import Path
 
@@ -255,6 +253,7 @@ async def async_client(db_session: AsyncSession) -> AsyncGenerator[AsyncClient, 
     # Clean up
     app.dependency_overrides.clear()
 
+
 @pytest.fixture
 def test_tickets():
     """Load test tickets from JSON fixture"""
@@ -271,7 +270,8 @@ def sample_ticket():
         "subject": "Naira withdrawal stuck on 'processing' for 8+ hours",
         "description": "I initiated a withdrawal to my GTBank account this morning at 8am and it's still showing 'processing'. It's now 5pm. Normally withdrawals are instant. I need this money urgently. Transaction ID: WD-NGN-8472910. This has never happened before in the 2 years I've been using Raenest.",
         "issue_type": "transfers",
-        "urgency": "high"
+        "urgency": "high",
     }
-    
+
+
 # TODO: DB STUFFS NOT NEEDED FOR TESTING, REMOVE IT

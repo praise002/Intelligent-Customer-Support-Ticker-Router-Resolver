@@ -183,23 +183,23 @@ class RaenestDocScraper:
         return all_docs
 
 
-if __name__ == "__main__":
-    scraper = RaenestDocScraper()
-    # scraper._categorize_doc(
-    #     "https://help.raenest.com/en/collections/3486985-bank-accounts"
-    # )
+# if __name__ == "__main__":
+#     scraper = RaenestDocScraper()
+#     # scraper._categorize_doc(
+#     #     "https://help.raenest.com/en/collections/3486985-bank-accounts"
+#     # )
 
-    # scraper._extract_title_from_url(
-    #     # "https://help.raenest.com/en/articles/6307378-raenest-formerly-geegpay-personal-account"
-    #     "https://help.raenest.com/en/articles/6307378-6307378-6307378-6307378-6307378-6307378"
-    # )
-    print(scraper)
-    docs = scraper.run()
+#     # scraper._extract_title_from_url(
+#     #     # "https://help.raenest.com/en/articles/6307378-raenest-formerly-geegpay-personal-account"
+#     #     "https://help.raenest.com/en/articles/6307378-6307378-6307378-6307378-6307378-6307378"
+#     # )
+#     print(scraper)
+#     docs = scraper.run()
 
-    if docs:
-        print("\n📄 Sample from first document:")
-        print(f"Title: {docs[0]['title']}")
-        print(f"URL: {docs[0]['url']}")
-        print(f"Type: {docs[0]['doc_type']}")
-        print(f"Content preview: {docs[0]['content'][:200]}...")
-        print(f"Content preview: {docs[0]['content'][:200]}...")
+#     if docs:
+#         print("\n📄 Sample from first document:")
+#         print(f"Title: {docs[0]['title']}")
+#         print(f"URL: {docs[0]['url']}")
+#         print(f"Type: {docs[0]['doc_type']}")
+#         print(f"Content preview: {docs[0]['content'][:200]}...")
+#         print(f"Content preview: {docs[0]['content'][:200]}...")

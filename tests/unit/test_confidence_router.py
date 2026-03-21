@@ -1,4 +1,4 @@
-from agents.workflow_nodes import route_by_confidence
+from src.agents.workflow_nodes import route_by_confidence
 
 
 class TestConfidenceRouter:

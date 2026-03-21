@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Start Celery worker
+celery -A src.tickets.celery_config worker --loglevel=info --concurrency=3 &
+
+# Start Celery Beat (scheduler)
+celery -A src.tickets.celery_config beat --loglevel=info &
+
+# Keep the script running
+wait

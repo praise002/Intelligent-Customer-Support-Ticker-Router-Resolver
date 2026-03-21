@@ -1,5 +1,4 @@
 import select
-import uuid
 
 from sqlmodel.ext.asyncio.session import AsyncSession
 

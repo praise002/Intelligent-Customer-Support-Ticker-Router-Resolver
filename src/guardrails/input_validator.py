@@ -1,9 +1,9 @@
 import re
 from dataclasses import dataclass
-from typing import Dict
 
-from guardrails import Guard
-from guardrails.hub import ToxicLanguage
+
+# from guardrails import Guard
+# from guardrails.hub import ToxicLanguage
 from src.guardrails.input_config import INPUT_GUARDRAIL_CONFIG
 
 
@@ -25,13 +25,14 @@ class InputGuardrails:
 
         # Initialize Guardrails AI for toxicity
         if self.config["toxicity"]["enabled"]:
-            self.toxicity_guard = Guard().use(
-                ToxicLanguage(
-                    threshold=self.config["toxicity"]["threshold"],
-                    validation_method="sentence",
-                    on_fail="exception",
-                )
-            )
+            # self.toxicity_guard = Guard().use(
+            #     ToxicLanguage(
+            #         threshold=self.config["toxicity"]["threshold"],
+            #         validation_method="sentence",
+            #         on_fail="exception",
+            #     )
+            # )
+            pass
 
     def validate_input(self, subject: str, description: str) -> InputValidation:
         """

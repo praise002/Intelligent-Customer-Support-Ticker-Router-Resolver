@@ -6,9 +6,9 @@ from langchain_nvidia_ai_endpoints import ChatNVIDIA
 from langchain_openai import ChatOpenAI
 from langgraph.graph import StateGraph
 
-from agents.classifier import TicketClassifier
-from scripts.vector_store import VectorStoreManager
-from src.utility import ConfidenceCalculator
+from src.agents.classifier import TicketClassifier
+from src.agents.confidence import ConfidenceCalculator
+from src.scripts.vector_store import VectorStoreManager
 
 
 def get_llm_client(request: Request) -> Union[ChatNVIDIA, ChatGroq, ChatOpenAI]:

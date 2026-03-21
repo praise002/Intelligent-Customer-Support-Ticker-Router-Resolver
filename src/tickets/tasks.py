@@ -2,8 +2,8 @@ import logging
 
 from celery import Task
 
-from agents.classifier import TicketClassifier
-from scripts.vector_store import VectorStoreManager
+from src.agents.classifier import TicketClassifier
+from src.scripts.vector_store import VectorStoreManager
 from src.db.main import get_session
 from src.tickets.schemas import TicketUpdate
 from src.tickets.service import get_ticket_by_id, update_ticket

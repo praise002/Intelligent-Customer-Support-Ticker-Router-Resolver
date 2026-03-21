@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "validators": {
+    "guardrails/toxic_language": {
+      "import_path": "guardrails_grhub_toxic_language",
+      "exports": [
+        "ToxicLanguage"
+      ],
+      "installed_at": "2026-03-21T13:53:13.407353+00:00",
+      "package_name": "guardrails-grhub-toxic-language"
+    }
+  }
+}

@@ -1,4 +1,5 @@
 from celery import Celery
+from celery.schedules import crontab
 from kombu import Queue
 
 REDIS_URL = "redis://localhost:6379/0"
@@ -32,3 +33,11 @@ celery_app.conf.task_queues = (
         "processing", routing_key="processing", queue_arguments={"x-max-priority": 10}
     ),
 )
+
+
+beat_schedule = {
+    "compute-metrics-hourly": {
+        "task": "src.tasks.compute_daily_metrics",
+        "schedule": crontab(minute=0),  # Every hour at :00
+    }
+}
