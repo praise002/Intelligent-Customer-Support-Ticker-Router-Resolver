@@ -1,5 +1,6 @@
 from src.agents.workflow_nodes import route_by_confidence
 
+# pytest tests/unit/test_confidence_router.py::TestConfidenceRouter -v -s
 
 class TestConfidenceRouter:
     """Test routing logic based on confidence scores"""

@@ -51,6 +51,7 @@ class Customer(SQLModel, table=True):
 class Ticket(SQLModel, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     ticket_id: int
+    name: str | None = None
     subject: str
     content: str
     email: EmailStr

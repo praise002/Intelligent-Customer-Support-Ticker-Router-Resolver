@@ -65,14 +65,18 @@ class LLMProvider(str, Enum):
     GROQ = "groq"
     OPENAI = "openai"
 
-
+class WebFormTicket(BaseModel):
+    """Schema for web form submissions"""
+    subject: str
+    content: str
+    email: EmailStr
+    name: str | None = None
+    
 class TicketBase(BaseModel):
     ticket_id: int
     subject: str
     content: str
     email: EmailStr
-    urgency: Urgency
-    issue_type: IssueType
 
 
 class TicketCreate(TicketBase):
@@ -80,6 +84,8 @@ class TicketCreate(TicketBase):
 
 
 class TicketUpdate(BaseModel):
+    urgency: Urgency
+    issue_type: IssueType
     retrieval_score: float | None = None
     generated_response: str | None = None
     llm_confidence: float | None = None

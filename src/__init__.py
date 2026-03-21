@@ -1,7 +1,7 @@
 import logging
 from contextlib import asynccontextmanager
 
-from decouple import config
+from decouple import config as c
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
@@ -31,7 +31,7 @@ def initialize_components():
     app_state["vector_store"] = VectorStoreManager()
     app_state["confidence_calculator"] = ConfidenceCalculator()
     app_state["ticket_classifier"] = TicketClassifier(
-        api_token=config("NVIDIA_API_KEY_2")
+        api_token=c("NVIDIA_API_KEY_2")
     )
     app_state["workflow"] = create_ticket_workflow()
     logging.info("AI components initialized successfully.")
@@ -39,7 +39,7 @@ def initialize_components():
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    await initialize_components()
+    initialize_components()
     print("Server is starting...")
     yield
     app_state.clear()
@@ -54,7 +54,7 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-origins = ["http://localhost:5173"]
+origins = ["http://localhost:5173", "http://127.0.0.1:5500"]
 
 # CORS middleware
 app.add_middleware(

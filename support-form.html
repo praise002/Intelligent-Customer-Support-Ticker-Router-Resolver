@@ -36,6 +36,7 @@
         opacity: 0;
         transform: translateY(30px);
       }
+
       to {
         opacity: 1;
         transform: translateY(0);
@@ -70,7 +71,8 @@
       font-size: 14px;
     }
 
-    input, textarea {
+    input,
+    textarea {
       width: 100%;
       padding: 12px 16px;
       border: 2px solid #e0e0e0;
@@ -80,7 +82,8 @@
       font-family: inherit;
     }
 
-    input:focus, textarea:focus {
+    input:focus,
+    textarea:focus {
       outline: none;
       border-color: #667eea;
       box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
@@ -128,8 +131,13 @@
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
     }
 
     .message.success {
@@ -148,7 +156,7 @@
       display: inline-block;
       width: 16px;
       height: 16px;
-      border: 2px solid rgba(255,255,255,0.3);
+      border: 2px solid rgba(255, 255, 255, 0.3);
       border-radius: 50%;
       border-top-color: white;
       animation: spin 0.6s linear infinite;
@@ -156,7 +164,9 @@
     }
 
     @keyframes spin {
-      to { transform: rotate(360deg); }
+      to {
+        transform: rotate(360deg);
+      }
     }
 
     @media (max-width: 600px) {
@@ -220,17 +230,15 @@
       messageBox.innerHTML = '';
 
       const data = {
-        // ticket_id: `TKT-${Date.now()}`,  
         subject: e.target.subject.value,
-        description: e.target.message.value,
-        sender: e.target.email.value,
-        customer_name: e.target.name.value
+        content: e.target.message.value,
+        email: e.target.email.value,
+        name: e.target.name.value
       };
 
       try {
         // const url = 'https://n8npraizdev.dpdns.org/webhook-test/support-ticket';
-        const url = 'http://localhost:8000/api/v1/webhook/ticket-created';
-        // Production: 'https://support-agent.praizdev.com/api/v1/webhook/ticket-created'
+        const url = 'http://localhost:7000/api/v1/submit-ticket';
 
         const res = await fetch(url, {
           method: 'POST',

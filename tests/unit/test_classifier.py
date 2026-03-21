@@ -27,12 +27,12 @@ class TestClassifier:
         )
         assert result["urgency"] == "medium"
 
-    def test_urgency_low(self):
+    def test_urgency_low(self):  # FAILED
         """Low urgency tickets"""
         result = classifier.classify(
-            subject="Question about fees",
-            description="How much does it cost to withdraw to local bank?",
+            "Question about fees\n\nHow much does it cost to withdraw to local bank?",
         )
+        print(result)
         assert result["urgency"] == "low"
 
     def test_issue_type_cards(self):
@@ -42,7 +42,7 @@ class TestClassifier:
         )
         assert result["issue_type"] == "cards"
 
-    def test_issue_type_verification(self):
+    def test_issue_type_verification(self):  # FAILED
         """Account verification issues"""
         result = classifier.classify(
             "KYC rejected\n\nMy documents were rejected, need to know why",

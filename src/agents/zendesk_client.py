@@ -30,6 +30,20 @@ group_map = {
 # Set priority based on urgency
 priority_map = {"high": "urgent", "medium": "normal", "low": "low"}
 
+async def create_single_ticket(ticket_data: Dict):
+    """Create a single ticket"""
+
+    url = f"{BASE_URL}/tickets.json"
+
+    async with httpx.AsyncClient() as client:
+        response = await client.post(
+            url,
+            json={"ticket": ticket_data},
+            auth=AUTH,
+            headers={"Content-Type": "application/json"},
+        )
+        response.raise_for_status()
+        return response.json()["ticket"]
 
 async def update_single_ticket(ticket_id: str, update_data: Dict):
     """Update a single ticket"""
