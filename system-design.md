@@ -264,32 +264,9 @@ Returning 200 immediately prevents Zendesk from timing out during the 5-10 secon
 ### REST Endpoints
 ```
 GET   /api/v1/health          → Check the health of the API
-<!-- GET   /api/v1/tickets          → Get all tickets --># TODO: THINKING
+GET   /api/v1/tickets          → Get all tickets 
 GET   /api/v1/stats                  → dashboard metrics
 GET   /api/v1/stats?section=performance → real time metrics
-```
-
-```
-{
-  "business": {
-    "resolution_rate": 0.65,
-    "escalation_rate": 0.35,
-    "reopen_rate": 0.08  # track by zendesk but not assured yet on zn dashboard
-  },
-  "quality": {
-    "avg_tone_empathy": 0.82,
-    "avg_response_quality": 0.79,
-    "avg_faithfulness": 0.85,
-    "avg_groundedness": 0.88,
-    "hallucination_rate": 0.03
-  },
-  "performance": {
-    "avg_latency_seconds": 7.2,
-    "queue_depth": 12,
-    "worker_utilization": 0.54,
-    "uptime": 0.999
-  }
-}
 ```
 
 **Stats endpoint** uses a cron job every 5 minutes to pre-compute counts (materialized view). Real-time accuracy not required for dashboard statistics.

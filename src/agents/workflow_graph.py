@@ -1,6 +1,6 @@
 from langgraph.graph import END, StateGraph
 
-from agents.workflow_nodes import (
+from src.agents.workflow_nodes import (
     auto_resolve_node,
     calculate_confidence_node,
     escalate_node,
@@ -8,7 +8,7 @@ from agents.workflow_nodes import (
     human_review_node,
     route_by_confidence,
 )
-from agents.workflow_state import TicketState
+from src.agents.workflow_state import TicketState
 
 
 def create_ticket_workflow() -> StateGraph:

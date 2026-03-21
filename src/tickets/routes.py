@@ -3,9 +3,9 @@ import logging
 from fastapi import APIRouter, Depends, Request
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from agents.llm_config import get_llm_client
-from scripts import vector_store
+from src.agents.llm_config import get_llm_client
 from src.db.main import get_session
+from src.guardrails.input_validator import validate_input
 from src.tickets.dependencies import get_vector_store
 from src.tickets.schemas import TicketCreate, ZendeskWebhookPayload
 from src.tickets.service import create_ticket
@@ -52,8 +52,19 @@ async def zendesk_webhook(
     subject = payload.subject
     description = payload.description
 
-    print(f"New ticket created: {ticket_id} - {subject}")
-    print(f"Description: {description}")
+    # validation = validate_input(
+    #     subject=payload.subject, description=payload.description
+    # )
+
+    # if not validation.safe:
+    #     logger.warning(
+    #         f"🚫 Blocked ticket {payload.id}: {validation.reason} "
+    #         f"(category: {validation.category})"
+    #     )
+
+    #     # TODO: Alert if spike in blocked tickets
+
+    #     return {"status": "blocked"}
 
     ticket_data = TicketCreate(
         ticket_id=payload.id,
@@ -61,6 +72,8 @@ async def zendesk_webhook(
         content=payload.description,
         email=payload.requester_email,
     )
+    print(f"New ticket created: {ticket_id} - {subject}")
+    print(f"Description: {description}")
 
     task = classify_ticket_task.delay(payload.id, payload.subject, payload.description)
     print(task)

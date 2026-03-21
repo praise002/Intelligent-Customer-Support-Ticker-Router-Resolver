@@ -1,7 +1,7 @@
-from decouple import config
 import pytest
+from decouple import config
 
-from agents.classifier import TicketClassifier
+from src.agents.classifier import TicketClassifier
 from src.tickets.tasks import classify_ticket_task
 
 hf_token = config("HF_TOKEN")
@@ -74,60 +74,62 @@ class TestClassifier:
         )
         assert "confidence_scores" in result
         assert isinstance(result["confidence_scores"], dict)
-        
+
     def test_demo_tickets_classification(self, test_tickets):
         """
         Loop through all demo tickets and validate expected classification.
         """
         failed_tickets = []
-        
+
         for ticket in test_tickets:
             # Get classification from classifier
             result = classifier.classify_ticket(
-                subject=ticket["subject"],
-                description=ticket["description"]
+                subject=ticket["subject"], description=ticket["description"]
             )
-            
+
             # Get expected classification
             expected = ticket["expected_classification"]
-            
+
             # Track mismatches
             mismatches = []
-            
+
             # Check issue_type
             if result["issue_type"] != expected["issue_type"]:
                 mismatches.append(
                     f"issue_type: got '{result['issue_type']}', expected '{expected['issue_type']}'"
                 )
-            
+
             # Check urgency
             if result["urgency"] != expected["urgency"]:
                 mismatches.append(
                     f"urgency: got '{result['urgency']}', expected '{expected['urgency']}'"
                 )
-            
+
             # If any mismatches, record this ticket
             if mismatches:
-                failed_tickets.append({
-                    "ticket_id": ticket["ticket_id"],
-                    "subject": ticket["subject"],
-                    "mismatches": mismatches,
-                    "actual": result,
-                    "expected": expected
-                })
-        
+                failed_tickets.append(
+                    {
+                        "ticket_id": ticket["ticket_id"],
+                        "subject": ticket["subject"],
+                        "mismatches": mismatches,
+                        "actual": result,
+                        "expected": expected,
+                    }
+                )
+
         # Report failures
         if failed_tickets:
             error_msg = "\n\nClassification failures:\n"
             for failure in failed_tickets:
                 error_msg += f"\n{failure['ticket_id']}: {failure['subject']}\n"
-                for mismatch in failure['mismatches']:
+                for mismatch in failure["mismatches"]:
                     error_msg += f"  - {mismatch}\n"
-            
+
             # Show summary
             error_msg += f"\n{len(failed_tickets)}/{len(test_tickets)} tickets failed classification"
-            
+
             pytest.fail(error_msg)
+
 
 class TestClassifierEdgeCases:
     """Test edge cases and error handling"""

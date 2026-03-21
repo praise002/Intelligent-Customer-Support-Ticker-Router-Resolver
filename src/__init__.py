@@ -7,19 +7,21 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.responses import RedirectResponse
 
-from agents.classifier import TicketClassifier
-from agents.llm_config import get_llm_client
-from agents.workflow_graph import create_ticket_workflow
 from custom_logging import setup_logging
-from scripts.vector_store import VectorStoreManager
+
+from src.agents.classifier import TicketClassifier
+from src.agents.confidence import ConfidenceCalculator
+from src.agents.llm_config import get_llm_client
+from src.agents.workflow_graph import create_ticket_workflow
+from src.scripts.vector_store import VectorStoreManager
 from src.tickets.routes import router as api_router
-from src.utility import ConfidenceCalculator
 
 version = "v1"
 
 setup_logging()
 
 app_state = {}
+
 
 def initialize_components():
     """Initialize AI components (only once)"""
