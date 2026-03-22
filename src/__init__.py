@@ -8,7 +8,6 @@ from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.responses import RedirectResponse
 
 from custom_logging import setup_logging
-
 from src.agents.classifier import TicketClassifier
 from src.agents.confidence import ConfidenceCalculator
 from src.agents.llm_config import get_llm_client
@@ -30,9 +29,7 @@ def initialize_components():
     app_state["llm_client"] = get_llm_client()
     app_state["vector_store"] = VectorStoreManager()
     app_state["confidence_calculator"] = ConfidenceCalculator()
-    app_state["ticket_classifier"] = TicketClassifier(
-        api_token=c("NVIDIA_API_KEY_2")
-    )
+    app_state["ticket_classifier"] = TicketClassifier(api_token=c("NVIDIA_API_KEY"))
     app_state["workflow"] = create_ticket_workflow()
     logging.info("AI components initialized successfully.")
 

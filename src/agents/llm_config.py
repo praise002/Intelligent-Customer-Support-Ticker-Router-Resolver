@@ -25,7 +25,7 @@ def get_llm_client(provider: LLMProvider = None):
 def auto_detect_llm_provider() -> LLMProvider:
     """Auto-detect which LLM provider to use based on available API keys"""
 
-    nvidia_key = config("NVIDIA_API_KEY_2", default=None)
+    nvidia_key = config("NVIDIA_API_KEY", default=None)
     groq_key = config("GROQ_API_KEY", default=None)
     openai_key = config("OPENAI_API_KEY", default=None)
 
@@ -48,9 +48,9 @@ def _get_nvidia_llm():
     """Initialize NVIDIA LLM with structured output"""
     from langchain_nvidia_ai_endpoints import ChatNVIDIA
 
-    return ChatNVIDIA(model="meta/llama-3.1-70b-instruct").with_structured_output(
-        SupportResponse
-    )
+    return ChatNVIDIA(
+        model="meta/llama-3.1-70b-instruct", api_key=config("NVIDIA_API_KEY")
+    ).with_structured_output(SupportResponse)
 
 
 def _get_groq_llm():
@@ -58,8 +58,8 @@ def _get_groq_llm():
     from langchain_groq import ChatGroq
 
     return ChatGroq(
-        model="llama-3.1-70b-versatile", temperature=0.1
-    ).with_structured_output(SupportResponse)
+        api_key=config("GROQ_API_KEY"), model="llama-3.3-70b-versatile", temperature=0.1
+    ).with_structured_output(SupportResponse) 
 
 
 def _get_openai_llm():
@@ -69,4 +69,3 @@ def _get_openai_llm():
     return ChatOpenAI(model="gpt-4o-mini", temperature=0.1).with_structured_output(
         SupportResponse
     )
-        

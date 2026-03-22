@@ -50,7 +50,7 @@ async def update_single_ticket(ticket_id: str, update_data: Dict):
 
     url = f"{BASE_URL}/tickets/{ticket_id}.json"
 
-    async with httpx.AsyncClient() as client:
+    async with httpx.AsyncClient(timeout=20.0) as client:
         response = await client.put(
             url,
             json={"ticket": update_data},

@@ -77,7 +77,7 @@ class VectorStoreManager:
 
 
         """
-        nvidia_key = config("NVIDIA_API_KEY_2", default=None)
+        nvidia_key = config("NVIDIA_API_KEY", default=None)
         openai_key = config("OPENAI_API_KEY", default=None)
 
         if nvidia_key:
@@ -111,7 +111,7 @@ class VectorStoreManager:
         """Initialize NVIDIA embeddings"""
         from langchain_nvidia_ai_endpoints import NVIDIAEmbeddings
 
-        nvidia_key = config("NVIDIA_API_KEY_2", default=None)
+        nvidia_key = config("NVIDIA_API_KEY", default=None)
 
         if not nvidia_key:
             raise ValueError("NVIDIA_API_KEY not found in environment")
@@ -291,5 +291,5 @@ class VectorStoreManager:
 if __name__ == "__main__":
     vector_store = VectorStoreManager()
     vector_store.load_and_index_documents()
-    
+
 # To call this fn, I have to first judge it b4 adding it to the vector store

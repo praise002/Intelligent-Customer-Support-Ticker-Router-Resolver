@@ -1,5 +1,4 @@
-import select
-
+from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from src.db.models import Ticket
@@ -23,7 +22,7 @@ async def get_ticket_by_id(session: AsyncSession, ticket_id: int) -> Ticket | No
     """
     Retrieve a single ticket by its UUID.
     """
-    statement = select(Ticket).where(Ticket.ticket_id == ticket_id)
+    statement = select(Ticket).where(Ticket.ticket_id == int(ticket_id))
     result = await session.exec(statement)
     return result.first()
 

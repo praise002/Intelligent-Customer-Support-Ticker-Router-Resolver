@@ -7,7 +7,8 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from src.agents.llm_config import get_llm_client
 from src.agents.zendesk_client import create_single_ticket
 from src.db.main import get_session
-from src.guardrails.input_validator import validate_input
+
+# from src.guardrails.input_validator import validate_input
 from src.tickets.dependencies import get_vector_store
 from src.tickets.schemas import TicketCreate, WebFormTicket, ZendeskWebhookPayload
 from src.tickets.service import create_ticket
@@ -85,7 +86,9 @@ async def zendesk_webhook(
 
 
 @router.post("/submit-ticket")
-async def submit_web_form_ticket(ticket: WebFormTicket):
+async def submit_web_form_ticket(
+    ticket: WebFormTicket, session: AsyncSession = Depends(get_session)
+):
     """
     Direct ticket submission from web form.
     """
@@ -96,22 +99,31 @@ async def submit_web_form_ticket(ticket: WebFormTicket):
         "priority": "normal",
         "status": "new",
     }
-    
+
     try:
         zendesk_ticket = await create_single_ticket(payload)
         print(zendesk_ticket)
-        
-        logger.info(f"✅ Ticket created in Zendesk: #{zendesk_ticket['id']}")
-        
+
+        logger.info(f"Ticket created in Zendesk: #{zendesk_ticket['id']}")
+
+        ticket_data = WebFormTicket(
+            ticket_id=zendesk_ticket['id'],
+            subject=payload.subject,
+            content=payload.description,
+            email=payload.requester_email,
+            name=payload.name,
+        )
+        await create_ticket(session, ticket_data)
+
         return {
             "status": "success",
             "message": "Ticket submitted successfully!",
-            "ticket_id": zendesk_ticket["id"]
+            "ticket_id": zendesk_ticket["id"],
         }
-        
+
     except Exception as e:
-        logger.error(f"❌ Failed to create Zendesk ticket: {e}")
+        logger.error(f"Failed to create Zendesk ticket: {e}")
         raise HTTPException(
-            status_code=500,
-            detail=f"Failed to submit ticket: {str(e)}"
+            status_code=500, detail=f"Failed to submit ticket: {str(e)}"
         )
+        

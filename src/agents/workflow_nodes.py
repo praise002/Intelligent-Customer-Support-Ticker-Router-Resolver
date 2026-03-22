@@ -1,5 +1,6 @@
 from langchain_core.messages import HumanMessage, SystemMessage
 
+from src.agents.confidence import ConfidenceCalculator
 from src.agents.llm_config import get_llm_client
 from src.agents.workflow_state import TicketState
 from src.agents.zendesk_client import (
@@ -7,14 +8,13 @@ from src.agents.zendesk_client import (
     escalate_ticket,
     send_response_to_customer,
 )
-from src.agents.confidence import ConfidenceCalculator
-from src.tickets.schemas import RoutingDecision
+from src.tickets.schemas import LLMProvider, RoutingDecision
 
 # Celery runs as a separate process
 # Initialize LLM (do this once, cached in Celery worker)
 
-llm = get_llm_client()
-# llm = get_llm_client(LLMProvider.GROQ)
+# llm = get_llm_client()
+llm = get_llm_client(LLMProvider.GROQ)
 
 
 # NODE 1: Generate Response
@@ -102,13 +102,13 @@ def calculate_confidence_node(state: TicketState) -> TicketState:
     state["semantic_similarity"] = semantic_similarity
     state["final_confidence"] = final_confidence
 
-    return state
+    return statepch
 
 
 # NODE 3: Auto Resolve
 
 
-def auto_resolve_node(state: TicketState) -> TicketState:
+async def auto_resolve_node(state: TicketState) -> TicketState:
     """
     Sends response to customer automatically via Zendesk API.
     Also stores the ticket+response in knowledge base (feedback loop).
@@ -117,8 +117,11 @@ def auto_resolve_node(state: TicketState) -> TicketState:
     - routing_decision = "auto_resolve"
     """
 
-    send_response_to_customer(
-        ticket_id=state["ticket_id"], response=state["generated_response"]
+    await send_response_to_customer(
+        ticket_id=state["ticket_id"],
+        response=state["generated_response"],
+        urgency=state["classification"]["urgency"],
+        issue_type=state["classification"]["issue_type"],
     )
 
     state["routing_decision"] = RoutingDecision.AUTO_RESOLVE
@@ -129,13 +132,13 @@ def auto_resolve_node(state: TicketState) -> TicketState:
 # NODE 4: Human Review
 
 
-def human_review_node(state: TicketState) -> TicketState:
+async def human_review_node(state: TicketState) -> TicketState:
     """
     Assigns ticket to human for review before sending.
     Updates Zendesk with internal note containing draft response.
     """
 
-    assign_for_review(
+    await assign_for_review(
         ticket_id=state["ticket_id"],
         draft_response=state["generated_response"],
         confidence=state["final_confidence"],
@@ -151,12 +154,12 @@ def human_review_node(state: TicketState) -> TicketState:
 # NODE 5: Escalate
 
 
-def escalate_node(state: TicketState) -> TicketState:
+async def escalate_node(state: TicketState) -> TicketState:
     """
     Escalates to specialist team based on issue type.
     """
 
-    escalate_ticket(
+    await escalate_ticket(
         ticket_id=state["ticket_id"],
         issue_type=state["classification"]["issue_type"],
         attempted_response=state["generated_response"],

@@ -15,32 +15,32 @@ class ZendeskWebhookPayload(BaseModel):
     created_at: str
 
 
-class PlanType(Enum):
+class PlanType(str, Enum):
     free = "Free"
     premium = "Premium"
     enterprise = "Enterprise"
 
 
-class Priority(Enum):
+class Priority(str, Enum):
     HIGH = "high"
     MEDIUM = "medium"
     LOW = "low"
 
 
-class Urgency(Enum):
-    high = "High"
-    medium = "Medium"
-    low = "Low"
+class Urgency(str, Enum):
+    high = "high"
+    medium = "medium"
+    low = "low"
 
 
-class IssueType(Enum):
-    account_verification = "Account Verification"
+class IssueType(str, Enum):
+    account_verification = "account_verification"
     cards = "cards"
     transfers = "transfers"
     integrations = "integrations"
     fees = "fees"
     account_access = "account_access"
-    general = "General"
+    general = "general"
 
 
 class RoutingDecision(str, Enum):
@@ -65,13 +65,17 @@ class LLMProvider(str, Enum):
     GROQ = "groq"
     OPENAI = "openai"
 
+
 class WebFormTicket(BaseModel):
     """Schema for web form submissions"""
+
+    ticket_id: int | None = None
     subject: str
     content: str
     email: EmailStr
     name: str | None = None
-    
+
+
 class TicketBase(BaseModel):
     ticket_id: int
     subject: str
@@ -84,8 +88,8 @@ class TicketCreate(TicketBase):
 
 
 class TicketUpdate(BaseModel):
-    urgency: Urgency
-    issue_type: IssueType
+    urgency: Urgency | None = None
+    issue_type: IssueType | None = None
     retrieval_score: float | None = None
     generated_response: str | None = None
     llm_confidence: float | None = None

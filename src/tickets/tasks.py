@@ -1,10 +1,11 @@
+import asyncio
 import logging
 
 from celery import Task
 
 from src.agents.classifier import TicketClassifier
-from src.scripts.vector_store import VectorStoreManager
 from src.db.main import get_session
+from src.scripts.vector_store import VectorStoreManager
 from src.tickets.schemas import TicketUpdate
 from src.tickets.service import get_ticket_by_id, update_ticket
 from src.utility import get_priority_score
@@ -29,8 +30,11 @@ def classify_ticket_task(self: Task, ticket_id: int, subject: str, description: 
     try:
         # Load classifier once per worker (cached)
         if not hasattr(self, "classifier"):
+            from decouple import config
+
             logger.info("Loading classifier in worker...")
-            self.classifier = TicketClassifier()
+            hf_token = config("HF_TOKEN", default=None)
+            self.classifier = TicketClassifier(api_token=hf_token)
 
         ticket_text = f"{subject}. {description}"
         classification = self.classifier.classify(ticket_text)
@@ -64,13 +68,13 @@ def classify_ticket_task(self: Task, ticket_id: int, subject: str, description: 
 
 
 @celery_app.task(bind=True)
-async def process_llm_task(
+def process_llm_task(
     self: Task, ticket_id: str, subject: str, description: str, classification: dict
 ):
     """
     Process ticket through LangGraph workflow.
     """
-    from agents.workflow_graph import create_ticket_workflow
+    from src.agents.workflow_graph import create_ticket_workflow
 
     # Initialize workflow (cached in worker)
     if not hasattr(self, "workflow"):
@@ -94,7 +98,7 @@ async def process_llm_task(
         "retry_count": 0,
     }
 
-    final_state = self.workflow.invoke(initial_state)
+    final_state = asyncio.run(self.workflow.ainvoke(initial_state))
 
     logger.info(
         f"✅ Ticket {ticket_id} processed: "
@@ -103,6 +107,8 @@ async def process_llm_task(
     )
 
     update_data = TicketUpdate(
+        urgency=classification["urgency"],
+        issue_type=classification["issue_type"],
         retrieval_score=final_state.get("retrieval_score"),
         generated_response=final_state.get("generated_response"),
         llm_confidence=final_state.get("llm_confidence"),
@@ -111,14 +117,17 @@ async def process_llm_task(
         routing_decision=final_state.get("routing_decision"),
     )
 
-    async for session in get_session():
-        db_ticket = await get_ticket_by_id(session, ticket_id)
-        if db_ticket:
-            await update_ticket(
-                session=session, db_ticket=db_ticket, ticket_in=update_data
-            )
-            logger.info(f"Successfully updated ticket {ticket_id} in the database.")
-        else:
-            logger.error(f"Could not find ticket {ticket_id} in DB to update.")
+    async def update_db():
+        async for session in get_session():
+            db_ticket = await get_ticket_by_id(session, ticket_id)
+            if db_ticket:
+                await update_ticket(
+                    session=session, ticket=db_ticket, ticket_in=update_data
+                )
+                logger.info(f"Successfully updated ticket {ticket_id} in the database.")
+            else:
+                logger.error(f"Could not find ticket {ticket_id} in DB to update.")
+
+    asyncio.run(update_db())
 
     return final_state
