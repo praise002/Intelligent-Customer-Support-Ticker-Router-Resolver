@@ -34,7 +34,7 @@ An **AI-powered ticket routing system** that:
 
 **Watch the system in action:**
 
-[▶️ **Demo Video (5 min)**]([link-to-your-video](https://drive.google.com/drive/folders/1DToVZn78bmB4GmG1them9CpMtOZdW1Wc))
+[▶️ **Demo Video**]([link-to-your-video](https://drive.google.com/drive/folders/1DToVZn78bmB4GmG1them9CpMtOZdW1Wc))
 
 **What you'll see:**
 1. Customer submits ticket via web form
@@ -247,7 +247,7 @@ celery -A src.tickets.celery_config.celery_app worker --loglevel=info   -Q class
 
 **Praise Idowu** - Backend/AI Engineer  
 
-[LinkedIn]([your-linkedin](https://www.linkedin.com/in/praise-ifeoluwa-idowu-back-end-developer-django/)) | [Twitter]([your-twitter](https://x.com/PraiseID3?t=S6pVclNj0uw4vMgvEykOqQ&s=0)) 
+[LinkedIn](your-linkedin](https://www.linkedin.com/in/praise-ifeoluwa-idowu-back-end-developer-django/)) | [Twitter](https://x.com/PraiseID3?t=S6pVclNj0uw4vMgvEykOqQ&s=0)
 
 **Built for:** DevCareer × Raenest Freelancer Hackathon
 
