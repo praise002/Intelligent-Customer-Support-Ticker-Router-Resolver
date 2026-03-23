@@ -1,8 +1,8 @@
 """Initial migration
 
-Revision ID: b1d05c1501ee
+Revision ID: cc223ecbf695
 Revises: 
-Create Date: 2026-03-20 15:33:53.359848
+Create Date: 2026-03-22 20:37:04.882562
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 import sqlmodel
 
 # revision identifiers, used by Alembic.
-revision: str = 'b1d05c1501ee'
+revision: str = 'cc223ecbf695'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -35,11 +35,12 @@ def upgrade() -> None:
     op.create_table('ticket',
     sa.Column('id', sa.Uuid(), nullable=False),
     sa.Column('ticket_id', sa.Integer(), nullable=False),
+    sa.Column('name', sqlmodel.sql.sqltypes.AutoString(), nullable=True),
     sa.Column('subject', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
     sa.Column('content', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
     sa.Column('email', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
-    sa.Column('urgency', sa.Enum('high', 'medium', 'low', name='urgency'), nullable=False),
-    sa.Column('issue_type', sa.Enum('billing', 'technical', 'account', 'feature', 'general', name='issuetype'), nullable=False),
+    sa.Column('urgency', sa.Enum('high', 'medium', 'low', name='urgency'), nullable=True),
+    sa.Column('issue_type', sa.Enum('account_verification', 'cards', 'transfers', 'integrations', 'fees', 'account_access', 'general', name='issuetype'), nullable=True),
     sa.Column('customer_id', sa.Uuid(), nullable=True),
     sa.Column('retrieval_score', sa.Float(), nullable=True),
     sa.Column('generated_response', sqlmodel.sql.sqltypes.AutoString(), nullable=True),
@@ -47,6 +48,13 @@ def upgrade() -> None:
     sa.Column('semantic_similarity', sa.Float(), nullable=True),
     sa.Column('final_confidence', sa.Float(), nullable=True),
     sa.Column('routing_decision', sa.Enum('AUTO_RESOLVE', 'HUMAN_REVIEW', 'ESCALATE', name='routingdecision'), nullable=True),
+    sa.Column('judge_tone_empathy', sa.Float(), nullable=True),
+    sa.Column('judge_response_quality', sa.Float(), nullable=True),
+    sa.Column('judge_faithfulness', sa.Float(), nullable=True),
+    sa.Column('judge_groundedness', sa.Float(), nullable=True),
+    sa.Column('judge_overall', sa.Float(), nullable=True),
+    sa.Column('judge_pass', sa.Boolean(), nullable=True),
+    sa.Column('judge_reason', sqlmodel.sql.sqltypes.AutoString(), nullable=True),
     sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=False),
     sa.Column('updated_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=False),
     sa.ForeignKeyConstraint(['customer_id'], ['customer.id'], ),

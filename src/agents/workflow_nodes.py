@@ -102,7 +102,7 @@ def calculate_confidence_node(state: TicketState) -> TicketState:
     state["semantic_similarity"] = semantic_similarity
     state["final_confidence"] = final_confidence
 
-    return statepch
+    return state
 
 
 # NODE 3: Auto Resolve
