@@ -238,7 +238,7 @@ reopen rate - get the data from zendesk
 ### ChromaDB (Vector Data)
 ```
 Collections:
-├── stripe_docs        → Stripe documentation embeddings
+├── raenest_docs        → Raenest documentation embeddings
 ├── faqs               → FAQ embeddings
 └── resolved_tickets   → Past resolved ticket embeddings
 ```
