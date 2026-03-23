@@ -79,11 +79,12 @@ Incoming Ticket (Zendesk Webhook)
 Auto      Human        Escalate
 Resolve   Review    (by issue type)
   ↓                      ↓
-Send to            billing   → #billing-support
-Customer           technical → #tech-support
-  ↓                account   → #account-team
-Store in           feature   → #product-team
-database           general   → #support-team
+Send to            cards   → #cards-team
+Customer           integration → #integration-team
+  ↓                security   → #security-team
+Store in           support   → #support-team
+database           transfer   → #transfer-team
+                   verification → #verification-team
 ```
 
 ---
