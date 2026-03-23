@@ -1,6 +1,7 @@
 import logging
 
 from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi.exceptions import RequestValidationError
 from lark import logger
 from sqlmodel.ext.asyncio.session import AsyncSession
 
@@ -85,6 +86,58 @@ async def zendesk_webhook(
     return {"status": "received"}
 
 
+# @router.post("/submit-ticket")
+# async def submit_web_form_ticket(
+#     ticket: WebFormTicket, session: AsyncSession = Depends(get_session)
+# ):
+#     """
+#     Direct ticket submission from web form.
+#     """
+#     payload = {
+#         "subject": ticket.subject,
+#         "comment": {"body": ticket.content},
+#         "requester": {"email": ticket.email, "name": ticket.name},
+#         "priority": "normal",
+#         "status": "new",
+#     }
+
+#     try:
+#         zendesk_ticket = await create_single_ticket(payload)
+#         print(zendesk_ticket)
+
+#         logger.info(f"Ticket created in Zendesk: #{zendesk_ticket['id']}")
+#         ticket_id = zendesk_ticket["id"]
+#         ticket_data = TicketCreate(
+#             ticket_id=ticket_id,
+#             subject=ticket.subject,
+#             content=ticket.content,
+#             email=ticket.email,
+#             name=ticket.name,
+#         )
+        
+#         task = classify_ticket_task.delay(ticket_id , ticket.subject, ticket.content)
+#         print(task)
+#         await create_ticket(session, ticket_data)
+
+#         return {
+#             "status": "success",
+#             "message": "Ticket submitted successfully!",
+#             "ticket_id": zendesk_ticket["id"],
+#         }
+
+#     except RequestValidationError as e:
+#         logger.error(f"Validation error: {e.errors()}")
+#         raise HTTPException(
+#             status_code=422,
+#             detail={"message": "Validation error", "errors": e.errors()},
+#         )
+#     except Exception as e:
+#         logger.error(f"Failed to create Zendesk ticket: {e}")
+#         raise HTTPException(
+#             status_code=500, detail=f"Failed to submit ticket: {str(e)}"
+#         )
+
+# TODO: UNDERSTAND IT LATER
 @router.post("/submit-ticket")
 async def submit_web_form_ticket(
     ticket: WebFormTicket, session: AsyncSession = Depends(get_session)
@@ -102,28 +155,57 @@ async def submit_web_form_ticket(
 
     try:
         zendesk_ticket = await create_single_ticket(payload)
-        print(zendesk_ticket)
-
-        logger.info(f"Ticket created in Zendesk: #{zendesk_ticket['id']}")
-
-        ticket_data = WebFormTicket(
-            ticket_id=zendesk_ticket['id'],
-            subject=payload.subject,
-            content=payload.description,
-            email=payload.requester_email,
-            name=payload.name,
+        print(f"✅ Zendesk ticket created: {zendesk_ticket}")
+        
+        # Extract ticket ID and ensure it's serializable
+        ticket_id = zendesk_ticket.get("id")
+        if not ticket_id:
+            raise ValueError(f"No ticket ID in Zendesk response: {zendesk_ticket}")
+        
+        logger.info(f"Ticket created in Zendesk: #{ticket_id}")
+        
+        # Prepare local DB data
+        ticket_data = TicketCreate(
+            ticket_id=str(ticket_id),  # Ensure string if your model expects it
+            subject=ticket.subject,
+            content=ticket.content,
+            email=ticket.email,
+            name=ticket.name,
         )
-        await create_ticket(session, ticket_data)
-
+        
+        # Create in local DB FIRST, then dispatch Celery task
+        try:
+            await create_ticket(session, ticket_data)
+            logger.info(f"✅ Ticket saved to local DB: {ticket_id}")
+        except Exception as db_error:
+            logger.error(f"❌ Database error: {db_error}")
+            raise HTTPException(status_code=500, detail=f"Database error: {str(db_error)}")
+        
+        # Dispatch Celery task AFTER DB commit with error handling
+        try:
+            # Ensure all arguments are JSON-serializable (strings, not objects)
+            task = classify_ticket_task.delay(
+                int(ticket_id),  # Explicitly convert to string
+                str(ticket.subject),
+                str(ticket.content)
+            )
+            logger.info(f"✅ Celery task dispatched: {task.id}")
+        except Exception as celery_error:
+            # Log but don't fail the request - ticket is already created
+            logger.error(f"⚠️ Celery task failed to dispatch: {celery_error}")
+            # Optionally retry or alert, but return success to user
+        
         return {
             "status": "success",
             "message": "Ticket submitted successfully!",
-            "ticket_id": zendesk_ticket["id"],
+            "ticket_id": ticket_id,
         }
 
+    except HTTPException:
+        raise  # Re-raise FastAPI exceptions as-is
     except Exception as e:
-        logger.error(f"Failed to create Zendesk ticket: {e}")
+        logger.exception(f"💥 Unexpected error in submit-ticket: {e}")
         raise HTTPException(
-            status_code=500, detail=f"Failed to submit ticket: {str(e)}"
+            status_code=500, 
+            detail=f"Internal server error: {str(e)}"
         )
-        

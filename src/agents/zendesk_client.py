@@ -29,11 +29,12 @@ group_map = {
 
 # Set priority based on urgency
 priority_map = {"high": "urgent", "medium": "normal", "low": "low"}
+# url = "https://example.zendesk.com/api/v2/tickets?include=users%2Cgroups%2Corganizations"
 
 async def create_single_ticket(ticket_data: Dict):
     """Create a single ticket"""
 
-    url = f"{BASE_URL}/tickets.json"
+    url = f"{BASE_URL}/tickets.json?include=users"
 
     async with httpx.AsyncClient() as client:
         response = await client.post(

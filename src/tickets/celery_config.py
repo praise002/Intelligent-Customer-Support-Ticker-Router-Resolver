@@ -2,7 +2,7 @@ from celery import Celery
 from celery.schedules import crontab
 from kombu import Queue
 
-REDIS_URL = "redis://localhost:6379/0"
+REDIS_URL = "redis://localhost:6378/0"
 
 celery_app = Celery("ticket_router", broker=REDIS_URL, backend=REDIS_URL)
 
