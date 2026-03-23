@@ -247,7 +247,8 @@ celery -A src.tickets.celery_config.celery_app worker --loglevel=info   -Q class
 
 **Praise Idowu** - Backend/AI Engineer  
 
-[LinkedIn](your-linkedin](https://www.linkedin.com/in/praise-ifeoluwa-idowu-back-end-developer-django/)) | [Twitter](https://x.com/PraiseID3?t=S6pVclNj0uw4vMgvEykOqQ&s=0)
+[LinkedIn](https://www.linkedin.com/in/praise-ifeoluwa-idowu-back-end-developer-django/)
+ | [Twitter](https://x.com/PraiseID3?t=S6pVclNj0uw4vMgvEykOqQ&s=0)
 
 **Built for:** DevCareer × Raenest Freelancer Hackathon
 
@@ -262,4 +263,4 @@ MIT
 ## 🙏 Acknowledgments
 
 - Raenest x DevCareer for organizing the hackathon
-- NVIDIA for NIM API access
+- NVIDIA for API access
