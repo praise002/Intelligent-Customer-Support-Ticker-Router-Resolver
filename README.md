@@ -34,7 +34,7 @@ An **AI-powered ticket routing system** that:
 
 **Watch the system in action:**
 
-[▶️ **Demo Video**]([link-to-your-video](https://drive.google.com/drive/folders/1DToVZn78bmB4GmG1them9CpMtOZdW1Wc))
+[▶️ **Demo Video**](https://drive.google.com/drive/folders/1DToVZn78bmB4GmG1them9CpMtOZdW1Wc)
 
 **What you'll see:**
 1. Customer submits ticket via web form
