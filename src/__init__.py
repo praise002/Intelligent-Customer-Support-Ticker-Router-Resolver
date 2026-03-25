@@ -19,18 +19,16 @@ version = "v1"
 
 setup_logging()
 
-app_state = {}
-
 
 def initialize_components():
     """Initialize AI components (only once)"""
     # Initialize all heavy components once
     logging.info("Initializing AI components...")
-    app_state["llm_client"] = get_llm_client()
-    app_state["vector_store"] = VectorStoreManager()
-    app_state["confidence_calculator"] = ConfidenceCalculator()
-    app_state["ticket_classifier"] = TicketClassifier(api_token=c("NVIDIA_API_KEY"))
-    app_state["workflow"] = create_ticket_workflow()
+    app.state.llm_client = get_llm_client()
+    app.state.vector_store = VectorStoreManager()
+    app.state.confidence_calculator = ConfidenceCalculator()
+    app.state.ticket_classifier = TicketClassifier(api_token=c("NVIDIA_API_KEY"))
+    app.state.workflow = create_ticket_workflow()
     logging.info("AI components initialized successfully.")
 
 
@@ -39,7 +37,6 @@ async def lifespan(app: FastAPI):
     initialize_components()
     print("Server is starting...")
     yield
-    app_state.clear()
     print("Server has been stopped...")
 
 

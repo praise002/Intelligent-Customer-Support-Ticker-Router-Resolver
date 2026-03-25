@@ -7,6 +7,7 @@ from pydantic import BaseModel, ConfigDict, EmailStr, Field
 SUCCESS_EXAMPLE = "success"
 FAILURE_EXAMPLE = "failure"
 
+
 class ZendeskWebhookPayload(BaseModel):
     id: str
     subject: str
@@ -131,7 +132,8 @@ class TicketResponseData(TicketBase):
 
     model_config = ConfigDict(from_attributes=True)
 
+
 class TicketResponse(BaseModel):
     status: str
     message: str
-    data: TicketResponseData
+    data: list[TicketResponseData]

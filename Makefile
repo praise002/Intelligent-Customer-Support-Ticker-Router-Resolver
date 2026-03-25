@@ -77,3 +77,7 @@ redis_d:
 
 
 # 	source venv/bin/activate
+# docker compose -f docker-compose.dev.yml web logs 
+# docker compose -f docker-compose.dev.yml up  --force-recreate
+# docker compose -f docker-compose.dev.yml up  --force-recreate web
+# docker compose -f docker-compose.dev.yml up --build --force-recreate web
