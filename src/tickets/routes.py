@@ -1,7 +1,8 @@
 import logging
 
-from fastapi import APIRouter, Depends, HTTPException, Request
-from fastapi.exceptions import RequestValidationError
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
+
+# from fastapi.exceptions import RequestValidationError
 from lark import logger
 from sqlmodel.ext.asyncio.session import AsyncSession
 
@@ -11,8 +12,15 @@ from src.db.main import get_session
 
 # from src.guardrails.input_validator import validate_input
 from src.tickets.dependencies import get_vector_store
-from src.tickets.schemas import TicketCreate, WebFormTicket, ZendeskWebhookPayload
-from src.tickets.service import create_ticket
+from src.tickets.schemas import (
+    SUCCESS_EXAMPLE,
+    TicketCreate,
+    TicketResponse,
+    TicketResponseData,
+    WebFormTicket,
+    ZendeskWebhookPayload,
+)
+from src.tickets.service import create_ticket, get_all_tickets
 from src.tickets.tasks import classify_ticket_task
 
 router = APIRouter()
@@ -114,7 +122,7 @@ async def zendesk_webhook(
 #             email=ticket.email,
 #             name=ticket.name,
 #         )
-        
+
 #         task = classify_ticket_task.delay(ticket_id , ticket.subject, ticket.content)
 #         print(task)
 #         await create_ticket(session, ticket_data)
@@ -137,6 +145,7 @@ async def zendesk_webhook(
 #             status_code=500, detail=f"Failed to submit ticket: {str(e)}"
 #         )
 
+
 # TODO: UNDERSTAND IT LATER
 @router.post("/submit-ticket")
 async def submit_web_form_ticket(
@@ -156,14 +165,14 @@ async def submit_web_form_ticket(
     try:
         zendesk_ticket = await create_single_ticket(payload)
         print(f"✅ Zendesk ticket created: {zendesk_ticket}")
-        
+
         # Extract ticket ID and ensure it's serializable
         ticket_id = zendesk_ticket.get("id")
         if not ticket_id:
             raise ValueError(f"No ticket ID in Zendesk response: {zendesk_ticket}")
-        
+
         logger.info(f"Ticket created in Zendesk: #{ticket_id}")
-        
+
         # Prepare local DB data
         ticket_data = TicketCreate(
             ticket_id=str(ticket_id),  # Ensure string if your model expects it
@@ -172,29 +181,31 @@ async def submit_web_form_ticket(
             email=ticket.email,
             name=ticket.name,
         )
-        
+
         # Create in local DB FIRST, then dispatch Celery task
         try:
             await create_ticket(session, ticket_data)
             logger.info(f"✅ Ticket saved to local DB: {ticket_id}")
         except Exception as db_error:
             logger.error(f"❌ Database error: {db_error}")
-            raise HTTPException(status_code=500, detail=f"Database error: {str(db_error)}")
-        
+            raise HTTPException(
+                status_code=500, detail=f"Database error: {str(db_error)}"
+            )
+
         # Dispatch Celery task AFTER DB commit with error handling
         try:
             # Ensure all arguments are JSON-serializable (strings, not objects)
             task = classify_ticket_task.delay(
                 int(ticket_id),  # Explicitly convert to string
                 str(ticket.subject),
-                str(ticket.content)
+                str(ticket.content),
             )
             logger.info(f"✅ Celery task dispatched: {task.id}")
         except Exception as celery_error:
             # Log but don't fail the request - ticket is already created
             logger.error(f"⚠️ Celery task failed to dispatch: {celery_error}")
             # Optionally retry or alert, but return success to user
-        
+
         return {
             "status": "success",
             "message": "Ticket submitted successfully!",
@@ -205,7 +216,25 @@ async def submit_web_form_ticket(
         raise  # Re-raise FastAPI exceptions as-is
     except Exception as e:
         logger.exception(f"💥 Unexpected error in submit-ticket: {e}")
-        raise HTTPException(
-            status_code=500, 
-            detail=f"Internal server error: {str(e)}"
-        )
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+
+
+@router.get("/tickets", response_model=TicketResponse)
+async def get_tickets(
+    limit: int = Query(20, ge=1, le=100, description="Number of tickets"),
+    offset: int = Query(0, ge=0, description="Skip tickets"),
+    session: AsyncSession = Depends(get_session),
+):
+    """
+    Get list of all tickets with pagination
+
+    EXAMPLE:
+    - GET /tickets/ → First 20 tickets
+    - GET /tickets/?limit=10&offset=20 → Tickets 21-30
+    """
+    tickets = await get_all_tickets(session=session, limit=limit, offset=offset)
+    return TicketResponse(
+        status=SUCCESS_EXAMPLE,
+        message="Tickets retrieved successfully",
+        data=[TicketResponseData.model_validate(t) for t in tickets],
+    )

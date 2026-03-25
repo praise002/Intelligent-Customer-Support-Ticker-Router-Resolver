@@ -4,6 +4,8 @@ from enum import Enum
 
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
+SUCCESS_EXAMPLE = "success"
+FAILURE_EXAMPLE = "failure"
 
 class ZendeskWebhookPayload(BaseModel):
     id: str
@@ -105,11 +107,12 @@ class TicketUpdate(BaseModel):
     judge_reason: str | None = None
 
 
-class TicketRead(TicketBase):
+class TicketResponseData(TicketBase):
     id: uuid.UUID
     customer_id: uuid.UUID | None
     created_at: datetime
     updated_at: datetime
+    name: str | None = None
 
     # AI-populated fields
     retrieval_score: float | None
@@ -127,3 +130,8 @@ class TicketRead(TicketBase):
     judge_reason: str | None = None
 
     model_config = ConfigDict(from_attributes=True)
+
+class TicketResponse(BaseModel):
+    status: str
+    message: str
+    data: TicketResponseData

@@ -27,7 +27,7 @@ import httpx
 
 # ── Configuration ────────────────────────────────────────────────────────────
 
-WEBHOOK_URL = "http://localhost:7000/api/v1/webhook/ticket-created"
+WEBHOOK_URL = "http://localhost:8000/api/v1/webhook/ticket-created"
 FIXTURES_FILE = Path(__file__).parent / "tests" / "fixtures" / "webhook_payloads.json"
 
 PRIORITY_EMOJI = {

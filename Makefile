@@ -6,16 +6,25 @@ ENV_FILE_PARAM = --env-file .env
 endif
 
 build:
-	docker-compose up --build -d --remove-orphans
+	docker compose up --build -d --remove-orphans
+
+up_build:
+	docker compose -f docker-compose.dev.yml up --build 
 
 up:
-	docker-compose up -d
+	docker compose up 
+
+up_d:
+	docker compose up -d
+
+up_f:
+	docker compose -f docker-compose.dev.yml up 
 
 down:
-	docker-compose down
+	docker compose down
 
 show_logs:
-	docker-compose logs
+	docker compose logs
 
 serv:
 	uvicorn src:app --reload
@@ -30,7 +39,7 @@ ureqn:
 	pip freeze > requirements.txt
 
 alembic_init:
-	alembic init app/db/migrations
+	alembic init -t async migrations
 
 mmig: 
 	if [ -z "$(message)" ]; then \
@@ -38,7 +47,6 @@ mmig:
 	else \
 		alembic revision --autogenerate -m "$(message)"; \
 	fi
-
 
 mmig_auto:
 	alembic revision --autogenerate
@@ -54,3 +62,18 @@ random_s:
 
 ngrok:
 	ngrok http 7000
+
+celery:
+	celery -A src.tickets.celery_config.celery_app worker --loglevel=info --concurrency=3 -Q classification,processing
+
+celery-beat:
+	celery -A src.tickets.celery_config.celery_app beat --loglevel=info
+
+redis:
+	docker run --name redis -p 6379:6379 redis
+
+redis_d:
+	docker run -d --name redis -p 6379:6379 redis
+
+
+# 	source venv/bin/activate

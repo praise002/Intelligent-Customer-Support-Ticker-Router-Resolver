@@ -12,7 +12,7 @@ set -e
 if [ "$SERVICE_TYPE" = "web" ]; then
   echo "🚀 Starting FastAPI server..."
   alembic upgrade head
-  exec uvicorn src.app --host 0.0.0.0 --port 8000 --reload
+  exec uvicorn src:app --host 0.0.0.0 --port 8000 --reload
   
 elif [ "$SERVICE_TYPE" = "celery" ] || [ "$SERVICE_TYPE" = "celery-beat" ]; then
   echo "Waiting for FastAPI to be ready..."
@@ -22,9 +22,9 @@ elif [ "$SERVICE_TYPE" = "celery" ] || [ "$SERVICE_TYPE" = "celery-beat" ]; then
   done
   
   if [ "$SERVICE_TYPE" = "celery" ]; then
-    exec celery -A src.tickets.celery_config worker --loglevel=info --concurrency=3
+    exec celery -A src.tickets.celery_config.celery_app worker --loglevel=info --concurrency=3 -Q classification,processing
   else
-    exec celery -A src.tickets.celery_config beat --loglevel=info
+    exec celery -A src.tickets.celery_config.celery_app beat --loglevel=info
   fi
 fi
 

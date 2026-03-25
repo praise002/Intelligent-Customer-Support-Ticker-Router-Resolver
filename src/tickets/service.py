@@ -1,7 +1,10 @@
+from typing import List
+
+from sqlalchemy.orm import selectinload
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from src.db.models import Ticket
+from src.db.models import Customer, Ticket
 from src.tickets.schemas import TicketCreate, TicketUpdate
 
 
@@ -43,6 +46,22 @@ async def update_ticket(
     await session.commit()
     await session.refresh(ticket)
     return ticket
+
+
+async def get_all_tickets(
+    session: AsyncSession,
+    limit: int = 20,
+    offset: int = 0,
+) -> List[Ticket]:
+    """
+    Get list of tickets
+    """
+    statement = select(Ticket).options(selectinload(Ticket.customer)).join(Customer)
+
+    statement = statement.offset(offset).limit(limit)
+
+    result = await session.exec(statement)
+    return result.all()
 
 
 # sudo -u postgres psql
