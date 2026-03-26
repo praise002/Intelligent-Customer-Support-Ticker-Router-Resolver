@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Request
 
 # from fastapi.exceptions import RequestValidationError
 from lark import logger
+from sqlalchemy import delete, text
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from src.agents.llm_config import get_llm_client
@@ -243,3 +244,12 @@ async def get_tickets(
         message="Tickets retrieved successfully",
         data=[TicketResponseData.model_validate(t) for t in tickets],
     )
+
+@router.delete("/tickets/delete-all", status_code=204)
+async def delete_all_tickets(session: AsyncSession = Depends(get_session)):
+    try:
+        await session.exec(text("TRUNCATE TABLE ticket CASCADE;"))
+        await session.commit()
+    except Exception as e:
+        await session.rollback()
+        raise HTTPException(500, detail=str(e))

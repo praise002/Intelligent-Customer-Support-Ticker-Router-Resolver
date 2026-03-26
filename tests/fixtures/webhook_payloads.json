@@ -90,7 +90,7 @@
     "created_at": "March 21, 2026"
   },
   {
-    "id": "TKT-10003",
+    "id": "10003",
     "subject": "Virtual card declined on Netflix payment",
     "description": "I tried to pay for my Netflix subscription but my Raenest virtual card was declined. I have $150 in my USD wallet so it's not a balance issue. The card worked fine last month. Card last 4 digits: 4782. Error message: 'Your card was declined'. Please help, my subscription expires today.",
     "status": "New",
@@ -99,7 +99,7 @@
     "created_at": "2025-03-20T11:30:00Z"
   },
   {
-    "id": "TKT-10004",
+    "id": "10004",
     "subject": "How do I link my Upwork account to receive payments?",
     "description": "I'm a freelancer on Upwork and I want to receive my payments directly to my Raenest USD account. What bank details should I use? Is there a fee for receiving Upwork payments? How long does it take for the first payment to arrive? I saw something about routing number and account number but I'm not sure where to find these.",
     "status": "New",
@@ -108,7 +108,7 @@
     "created_at": "2025-03-20T12:00:00Z"
   },
   {
-    "id": "TKT-10005",
+    "id": "10005",
     "subject": "Money credited to account but not showing in balance",
     "description": "This is really frustrating! I withdrew $500 from Upwork to my Raenest account. I got the credit alert notification, but when I check my wallet balance, it shows $0. The money is not there. I've been going back and forth with support for 4 days now and they just keep saying 'we're working on it'. I need my money! Transaction date: March 16, 2025. Alert shows successful but balance is empty.",
     "status": "New",
@@ -117,7 +117,7 @@
     "created_at": "2025-03-20T08:30:00Z"
   },
   {
-    "id": "TKT-10006",
+    "id": "10006",
     "subject": "Account locked after receiving payment from Germany",
     "description": "My account was locked after I received $950 from my friend in Germany. I've been receiving money from this same person for months without issues. You asked for documents and I provided everything - invoice, chat screenshots, everything! Now you're saying the account is permanently locked and won't release my money or send it back to the sender. This is theft! I've been emailing support for 3 weeks with no proper response.",
     "status": "New",
@@ -126,7 +126,7 @@
     "created_at": "2025-03-20T07:45:00Z"
   },
   {
-    "id": "TKT-10007",
+    "id": "10007",
     "subject": "What are the fees for withdrawing to Nigerian bank?",
     "description": "I want to convert my USD to Naira and withdraw to my local bank account. How much does Raenest charge for this? Are there hidden fees? What's the exchange rate you use? I want to know the total cost before I proceed.",
     "status": "New",
@@ -135,7 +135,7 @@
     "created_at": "2025-03-20T13:00:00Z"
   },
   {
-    "id": "TKT-10008",
+    "id": "10008",
     "subject": "Card creation failed - 'insufficient funds' error",
     "description": "I'm trying to create a USD virtual card but it keeps showing 'insufficient funds' error. I have $200 in my USD wallet. I've tried 5 times and it's not working. Do I need to pay a fee to create the card? If yes, how much? The app doesn't explain anything, it just keeps showing error.",
     "status": "New",
@@ -144,7 +144,7 @@
     "created_at": "2025-03-20T14:20:00Z"
   },
   {
-    "id": "TKT-10009",
+    "id": "10009",
     "subject": "GBP account application rejected - need explanation",
     "description": "My application to open a GBP account was rejected but I don't understand why. I used the exact same documents that were approved for my USD account - my international passport and bank statement. Why was USD approved but GBP rejected? I need a proper explanation, not just 'internal assessment'. I'm a legitimate freelancer receiving payments from UK clients.",
     "status": "New",
@@ -153,7 +153,7 @@
     "created_at": "2025-03-20T15:00:00Z"
   },
   {
-    "id": "TKT-10010",
+    "id": "10010",
     "subject": "Can't login to my account - 2FA not working",
     "description": "I can't access my account. When I try to login, it asks for 2FA code but I'm not receiving any SMS. I've tried multiple times. My phone number is correct: +234 803 XXX XXXX. I have $1,200 in my account and I need to make a payment today. Please help urgently!",
     "status": "New",
@@ -162,12 +162,183 @@
     "created_at": "2025-03-20T16:00:00Z"
   },
   {
-    "id": "TKT-10011",
+    "id": "10011",
     "subject": "Failed card transaction - money deducted but payment unsuccessful",
     "description": "I tried to pay for Google Ads with my Raenest virtual card. The transaction failed but $50 was deducted from my wallet. I checked my Google Ads account and the payment didn't go through. So where is my $50? I need a refund immediately. Transaction timestamp: 2025-03-20 10:15 AM.",
     "status": "New",
     "priority": "high",
     "requester_email": "david.marketing@gmail.com",
     "created_at": "2025-03-20T10:30:00Z"
-  }
+  },
+  {
+  "id": "101",
+  "subject": "KYC Verification Pending for 48 Hours",
+  "description": "----------------------------------------------\n\nAda Nnamdi, Mar 21, 2026, 21:38\n\nHello,\n\nI submitted my documents for verification two days ago using Veriff, but the status still shows \"pending review.\" I uploaded my international passport and a utility bill, both of which are clear and valid.\n\nI need my account approved urgently as I am expecting a payment from a client. This is my first time using Raenest, and I am quite disappointed with the delay.\n\nThank you.\n\nBest regards,\nAda Nnamdi",
+  "status": "New",
+  "priority": "Normal",
+  "requester_email": "ada.nnamdi@yahoo.com",
+  "created_at": "March 21, 2026"
+},
+{
+  "id": "102",
+  "subject": "Naira Withdrawal Stuck on Processing for 8+ Hours",
+  "description": "----------------------------------------------\n\nChidi Okafor, Mar 21, 2026, 09:05\n\nHi,\n\nI initiated a withdrawal to my GTBank account this morning at 8am and it is still showing \"processing\". It is now 5pm. Normally withdrawals are instant. I need this money urgently.\n\nTransaction ID: WD-NGN-8472910. This has never happened before in the 2 years I have been using Raenest. Please resolve this immediately.\n\nRegards,\nChidi Okafor",
+  "status": "New",
+  "priority": "Urgent",
+  "requester_email": "chidi.okafor@gmail.com",
+  "created_at": "March 21, 2026"
+},
+{
+  "id": "103",
+  "subject": "Virtual Card Declined on Netflix – Balance Is Fine",
+  "description": "----------------------------------------------\n\nTunde Bakare, Mar 21, 2026, 11:30\n\nHello Support,\n\nI tried to pay for my Netflix subscription but my Raenest virtual card was declined. I have $150 in my USD wallet so it is definitely not a balance issue. The card worked perfectly last month.\n\nCard last 4 digits: 4782. Error message received: \"Your card was declined.\"\n\nMy subscription expires today. Please help urgently.\n\nTunde Bakare",
+  "status": "New",
+  "priority": "High",
+  "requester_email": "tunde.bakare@outlook.com",
+  "created_at": "March 21, 2026"
+},
+{
+  "id": "104",
+  "subject": "How Do I Link My Upwork Account to Receive Payments?",
+  "description": "----------------------------------------------\n\nNgozi Obi, Mar 21, 2026, 12:00\n\nGood afternoon,\n\nI am a freelancer on Upwork and I want to receive my payments directly into my Raenest USD account. What bank details should I use on Upwork? Is there a fee for receiving Upwork payments?\n\nI saw something about routing numbers and account numbers but I am not sure where to find these in the app.\n\nThank you,\nNgozi Obi",
+  "status": "New",
+  "priority": "Low",
+  "requester_email": "ngozi.freelance@gmail.com",
+  "created_at": "March 21, 2026"
+},
+{
+  "id": "105",
+  "subject": "Money Credited via Notification But Not in Balance",
+  "description": "----------------------------------------------\n\nEmeka Dev, Mar 21, 2026, 08:30\n\nThis is really frustrating! I withdrew $500 from Upwork to my Raenest account. I received the credit alert notification, but when I check my wallet balance it shows $0. The money is simply not there.\n\nI have been going back and forth with support for 4 days and they just keep saying \"we are working on it.\" Transaction date: March 17, 2026.\n\nI need this resolved today.\n\nEmeka",
+  "status": "New",
+  "priority": "Urgent",
+  "requester_email": "emeka.dev@gmail.com",
+  "created_at": "March 21, 2026"
+},
+{
+  "id": "106",
+  "subject": "Account Locked After Receiving International Payment",
+  "description": "----------------------------------------------\n\nBlessing Eze, Mar 21, 2026, 07:45\n\nHello,\n\nMy account was locked after I received $950 from a friend in Germany. I have been receiving money from this same person for months without any issues. You asked for documents and I provided everything: invoice, chat screenshots, and ID.\n\nNow you are saying the account is permanently locked and will not release my money or return it to sender. I have been emailing support for 3 weeks with no proper response.\n\nBlessing",
+  "status": "New",
+  "priority": "Urgent",
+  "requester_email": "blessing.trade@gmail.com",
+  "created_at": "March 21, 2026"
+},
+{
+  "id": "107",
+  "subject": "What Are the Fees for Withdrawing to a Nigerian Bank?",
+  "description": "----------------------------------------------\n\nKunle Invest, Mar 21, 2026, 13:00\n\nHi there,\n\nI want to convert my USD balance to Naira and withdraw to my local GTBank account. How much does Raenest charge for this conversion and transfer? Are there any hidden fees I should be aware of?\n\nWhat exchange rate does Raenest use? I want to know the total cost before I proceed.\n\nThanks,\nKunle",
+  "status": "New",
+  "priority": "Low",
+  "requester_email": "kunle.invest@gmail.com",
+  "created_at": "March 21, 2026"
+},
+{
+  "id": "108",
+  "subject": "Card Creation Failed – Showing Insufficient Funds Error",
+  "description": "----------------------------------------------\n\nFemi Graphics, Mar 21, 2026, 14:20\n\nHello,\n\nI have been trying to create a USD virtual card for the past hour but I keep getting an \"insufficient funds\" error. I have $200 in my USD wallet.\n\nI have tried 5 times and it still is not working. Do I need to pay a fee to create a card? If yes, how much? The app gives no explanation, it just shows the error message.\n\nFemi",
+  "status": "New",
+  "priority": "Normal",
+  "requester_email": "femi.graphics@yahoo.com",
+  "created_at": "March 21, 2026"
+},
+{
+  "id": "109",
+  "subject": "Can't Login – 2FA Code Not Being Received",
+  "description": "----------------------------------------------\n\nOla Business, Mar 21, 2026, 16:00\n\nGood evening,\n\nI cannot access my Raenest account. Every time I try to log in, it asks for a 2FA code via SMS but I never receive it. I have tried at least 10 times today.\n\nMy phone number on the account is +234 803 XXX XXXX and it is correct and active. I have $1,200 in my account and I urgently need to make a payment before the end of business today.\n\nPlease help immediately.\n\nOla",
+  "status": "New",
+  "priority": "Urgent",
+  "requester_email": "ola.business@gmail.com",
+  "created_at": "March 21, 2026"
+},
+{
+  "id": "110",
+  "subject": "Sent $300 to the Wrong Raenest Tag – Need Urgent Reversal",
+  "description": "----------------------------------------------\n\nJohn Adeyemi, Mar 21, 2026, 11:05\n\nHi Support,\n\nI just made a terrible mistake. I accidentally sent $300 to the wrong Raenest account. I mistyped the Raenest tag. The transaction completed about 2 hours ago.\n\nThe correct tag should have been @correctuser123 but I sent to @wronguser456 by mistake. Transaction ID: TRF-8392014.\n\nCan you please reverse this transaction? This is extremely urgent as it is a large amount of money for me.\n\nJohn Adeyemi",
+  "status": "New",
+  "priority": "Urgent",
+  "requester_email": "john.adeyemi@gmail.com",
+  "created_at": "March 21, 2026"
+},
+{
+  "id": "10003",
+  "subject": "Virtual card declined on Netflix payment",
+  "description": "I tried to pay for my Netflix subscription but my Raenest virtual card was declined. I have $150 in my USD wallet so it's not a balance issue. The card worked fine last month. Card last 4 digits: 4782. Error message: 'Your card was declined'. Please help, my subscription expires today.",
+  "status": "New",
+  "priority": "high",
+  "requester_email": "tunde.bakare@outlook.com",
+  "created_at": "2025-03-20T11:30:00Z"
+},
+{
+  "id": "10004",
+  "subject": "How do I link my Upwork account to receive payments?",
+  "description": "I'm a freelancer on Upwork and I want to receive my payments directly to my Raenest USD account. What bank details should I use? Is there a fee for receiving Upwork payments? How long does it take for the first payment to arrive? I saw something about routing number and account number but I'm not sure where to find these.",
+  "status": "New",
+  "priority": "low",
+  "requester_email": "ngozi.freelance@gmail.com",
+  "created_at": "2025-03-20T12:00:00Z"
+},
+{
+  "id": "10005",
+  "subject": "Money credited to account but not showing in balance",
+  "description": "This is really frustrating! I withdrew $500 from Upwork to my Raenest account. I got the credit alert notification, but when I check my wallet balance, it shows $0. The money is not there. I've been going back and forth with support for 4 days now and they just keep saying 'we're working on it'. I need my money! Transaction date: March 16, 2025. Alert shows successful but balance is empty.",
+  "status": "New",
+  "priority": "urgent",
+  "requester_email": "emeka.dev@gmail.com",
+  "created_at": "2025-03-20T08:30:00Z"
+},
+{
+  "id": "10006",
+  "subject": "Account locked after receiving payment from Germany",
+  "description": "My account was locked after I received $950 from my friend in Germany. I've been receiving money from this same person for months without issues. You asked for documents and I provided everything - invoice, chat screenshots, everything! Now you're saying the account is permanently locked and won't release my money or send it back to the sender. This is theft! I've been emailing support for 3 weeks with no proper response.",
+  "status": "New",
+  "priority": "urgent",
+  "requester_email": "blessing.trade@gmail.com",
+  "created_at": "2025-03-20T07:45:00Z"
+},
+{
+  "id": "10007",
+  "subject": "What are the fees for withdrawing to Nigerian bank?",
+  "description": "I want to convert my USD to Naira and withdraw to my local bank account. How much does Raenest charge for this? Are there hidden fees? What's the exchange rate you use? I want to know the total cost before I proceed.",
+  "status": "New",
+  "priority": "low",
+  "requester_email": "kunle.invest@gmail.com",
+  "created_at": "2025-03-20T13:00:00Z"
+},
+{
+  "id": "10008",
+  "subject": "Card creation failed - 'insufficient funds' error",
+  "description": "I'm trying to create a USD virtual card but it keeps showing 'insufficient funds' error. I have $200 in my USD wallet. I've tried 5 times and it's not working. Do I need to pay a fee to create the card? If yes, how much? The app doesn't explain anything, it just keeps showing error.",
+  "status": "New",
+  "priority": "medium",
+  "requester_email": "femi.graphics@yahoo.com",
+  "created_at": "2025-03-20T14:20:00Z"
+},
+{
+  "id": "10009",
+  "subject": "GBP account application rejected - need explanation",
+  "description": "My application to open a GBP account was rejected but I don't understand why. I used the exact same documents that were approved for my USD account - my international passport and bank statement. Why was USD approved but GBP rejected? I need a proper explanation, not just 'internal assessment'. I'm a legitimate freelancer receiving payments from UK clients.",
+  "status": "New",
+  "priority": "medium",
+  "requester_email": "yemi.writer@gmail.com",
+  "created_at": "2025-03-20T15:00:00Z"
+},
+{
+  "id": "10010",
+  "subject": "Can't login to my account - 2FA not working",
+  "description": "I can't access my account. When I try to login, it asks for 2FA code but I'm not receiving any SMS. I've tried multiple times. My phone number is correct: +234 803 XXX XXXX. I have $1,200 in my account and I need to make a payment today. Please help urgently!",
+  "status": "New",
+  "priority": "urgent",
+  "requester_email": "ola.business@gmail.com",
+  "created_at": "2025-03-20T16:00:00Z"
+},
+{
+  "id": "10011",
+  "subject": "Failed card transaction - money deducted but payment unsuccessful",
+  "description": "I tried to pay for Google Ads with my Raenest virtual card. The transaction failed but $50 was deducted from my wallet. I checked my Google Ads account and the payment didn't go through. So where is my $50? I need a refund immediately. Transaction timestamp: 2025-03-20 10:15 AM.",
+  "status": "New",
+  "priority": "high",
+  "requester_email": "david.marketing@gmail.com",
+  "created_at": "2025-03-20T10:30:00Z"
+}
 ]
