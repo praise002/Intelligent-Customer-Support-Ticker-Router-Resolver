@@ -12,11 +12,12 @@ set -e
 if [ "$SERVICE_TYPE" = "web" ]; then
   echo "🚀 Starting FastAPI server..."
   alembic upgrade head
-  exec uvicorn src:app --host 0.0.0.0 --port 8000 --reload
+  # exec uvicorn src:app --host 0.0.0.0 --port 8000 --reload
+  exec uvicorn src:app --host 0.0.0.0 --port 8000 --reload --reload-dir /app/src
   
 elif [ "$SERVICE_TYPE" = "celery" ] || [ "$SERVICE_TYPE" = "celery-beat" ]; then
   echo "Waiting for FastAPI to be ready..."
-  while ! curl -s http://web:8000/api/v1/health >/dev/null; do
+  while ! curl -s http://web:8000/api/v1/healthcheck >/dev/null; do
     echo "FastAPI not ready. Retrying in 5s..."
     sleep 5
   done

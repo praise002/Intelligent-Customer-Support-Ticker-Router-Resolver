@@ -180,6 +180,7 @@ Confidence = 0.4×RAG_score + 0.3×Semantic_similarity + 0.3×LLM_confidence
 - Fine-tune confidence thresholds
 - Expand knowledge base
 - A/B testing routing decisions
+- Implement tool calling e.g KYC pending, Can say “Your KYC is still in review – we’ve escalated it.” No need to guess.
 
 🔨 **Dashboard:**
 - Real-time metrics

@@ -20,7 +20,7 @@ version = "v1"
 setup_logging()
 
 
-def initialize_components():
+def initialize_components(app: FastAPI):
     """Initialize AI components (only once)"""
     # Initialize all heavy components once
     logging.info("Initializing AI components...")
@@ -34,7 +34,7 @@ def initialize_components():
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    initialize_components()
+    initialize_components(app)
     print("Server is starting...")
     yield
     print("Server has been stopped...")
@@ -65,7 +65,7 @@ app.add_middleware(
     allowed_hosts=["*"],
 )
 
-app.include_router(api_router, prefix=f"/api/{version}")
+app.include_router(api_router, prefix=f"/api/{version}", tags=["Tickets"])
 
 
 # Custom OpenAPI schema to override 422 validation error response

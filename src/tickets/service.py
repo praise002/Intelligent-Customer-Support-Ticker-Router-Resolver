@@ -56,7 +56,11 @@ async def get_all_tickets(
     """
     Get list of tickets
     """
-    statement = select(Ticket).options(selectinload(Ticket.customer)).join(Customer)
+    statement = (
+        select(Ticket)
+        .options(selectinload(Ticket.customer))
+        .join(Customer, isouter=True)
+    )
 
     statement = statement.offset(offset).limit(limit)
 

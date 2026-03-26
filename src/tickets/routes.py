@@ -26,6 +26,11 @@ from src.tickets.tasks import classify_ticket_task
 router = APIRouter()
 
 
+@router.get("/healthcheck", include_in_schema=False)
+async def health():
+    return {"status": "ok"}
+
+
 @router.get("/health")
 async def health(
     request: Request,
@@ -51,7 +56,7 @@ async def health(
         return {"status": "unhealthy", "error": str(e)}
 
 
-@router.post("/webhook/ticket-created")
+@router.post("/webhook/ticket-created", include_in_schema=False)
 async def zendesk_webhook(
     payload: ZendeskWebhookPayload, session: AsyncSession = Depends(get_session)
 ):

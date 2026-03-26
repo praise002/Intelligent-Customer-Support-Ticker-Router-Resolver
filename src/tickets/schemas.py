@@ -116,6 +116,8 @@ class TicketResponseData(TicketBase):
     name: str | None = None
 
     # AI-populated fields
+    urgency: Urgency | None = None
+    issue_type: IssueType | None = None
     retrieval_score: float | None
     generated_response: str | None
     llm_confidence: float | None

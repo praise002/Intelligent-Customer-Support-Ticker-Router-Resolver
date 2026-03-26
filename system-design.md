@@ -65,7 +65,7 @@ Incoming Ticket (Zendesk Webhook)
          ↓
    [Vector Database]
    ┌─────────────────────┐
-   │ - Stripe Docs       │
+   │ - Raenest Docs       │
    │ - FAQs              │
    │ - Past Tickets      │
    └─────────────────────┘
@@ -135,7 +135,7 @@ Retrieves relevant context from the knowledge base before LLM response generatio
 
 | Property | Decision |
 |----------|----------|
-| **Knowledge Base** | Stripe docs, FAQs, past resolved tickets |
+| **Knowledge Base** | Raenest docs, FAQs, past resolved tickets |
 | **Pre-computed** | All KB documents embedded at startup and stored in ChromaDB |
 | **On demand** | Incoming ticket converted to embedding at runtime |
 | **Output** | Top N similar documents passed as context to LLM |

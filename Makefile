@@ -76,8 +76,11 @@ redis_d:
 	docker run -d --name redis -p 6379:6379 redis
 
 
+# sudo systemctl restart docker
 # 	source venv/bin/activate
 # docker compose -f docker-compose.dev.yml web logs 
 # docker compose -f docker-compose.dev.yml up  --force-recreate
 # docker compose -f docker-compose.dev.yml up  --force-recreate web
 # docker compose -f docker-compose.dev.yml up --build --force-recreate web
+# docker exec -it container_id sh
+# cat /app/src/tickets/dependencies.py

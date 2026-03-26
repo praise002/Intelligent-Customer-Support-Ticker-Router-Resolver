@@ -1,13 +1,19 @@
+from langchain_nvidia_ai_endpoints import NVIDIAEmbeddings
 import numpy as np
-from sentence_transformers import SentenceTransformer
-
+# from sentence_transformers import SentenceTransformer
+from decouple import config
 
 class ConfidenceCalculator:
     """Calculate semantic similarity for confidence scoring"""
 
     def __init__(self):
         # Load small, fast embedding model for similarity
-        self.model = SentenceTransformer("all-MiniLM-L6-v2")
+        # self.model = SentenceTransformer("all-MiniLM-L6-v2")
+        self.model = NVIDIAEmbeddings(
+            api_key=config("NVIDIA_API_KEY"),
+            model="nvidia/nv-embed-v1",
+            truncate="NONE",
+        )
 
     def calculate_similarity(self, query: str, context: str) -> float:
         """

@@ -2,9 +2,16 @@ from celery import Celery
 from celery.schedules import crontab
 from kombu import Queue
 
-REDIS_URL = "redis://localhost:6378/0"
+from src.config import Config
 
-celery_app = Celery("ticket_router", broker=REDIS_URL, backend=REDIS_URL)
+celery_app = Celery(
+"ticket_router",
+    broker=Config.REDIS_URL,
+    backend=Config.REDIS_URL,
+    broker_connection_retry_on_startup=True,
+    broker_connection_max_retries=10,
+    result_backend_max_retries=10,
+)
 
 celery_app.conf.update(
     task_queue_max_priority=10,

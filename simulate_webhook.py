@@ -105,7 +105,7 @@ def send_quick(url: str) -> None:
             "----------------------------------------------\n\n"
             "praise idowu, Mar 21, 2026, 21:38\n\n"
             "Hello,\n\n"
-            "I submitted my documents for verification two days ago using Veriff, "
+            "I submitted my documents for verification two days ago, "
             'but the status still shows "pending review." I uploaded my international '
             "passport and a utility bill, both of which are clear and valid.\n\n"
             "I need my account approved urgently as I am expecting a payment from a client.\n\n"
