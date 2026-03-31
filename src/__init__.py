@@ -1,18 +1,13 @@
 import logging
 from contextlib import asynccontextmanager
 
-from decouple import config as c
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.responses import RedirectResponse
 
 from custom_logging import setup_logging
-from src.agents.classifier import TicketClassifier
-from src.agents.confidence import ConfidenceCalculator
-from src.agents.llm_config import get_llm_client
-from src.agents.workflow_graph import create_ticket_workflow
-from src.scripts.vector_store import VectorStoreManager
+from src.agents.registry import get_registry
 from src.tickets.routes import router as api_router
 
 version = "v1"
@@ -20,24 +15,21 @@ version = "v1"
 setup_logging()
 
 
-def initialize_components(app: FastAPI):
-    """Initialize AI components (only once)"""
-    # Initialize all heavy components once
-    logging.info("Initializing AI components...")
-    app.state.llm_client = get_llm_client()
-    app.state.vector_store = VectorStoreManager()
-    app.state.confidence_calculator = ConfidenceCalculator()
-    app.state.ticket_classifier = TicketClassifier(api_token=c("NVIDIA_API_KEY"))
-    app.state.workflow = create_ticket_workflow()
-    logging.info("AI components initialized successfully.")
-
-
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    initialize_components(app)
-    print("Server is starting...")
+    logging.info("Server is starting...")
+
+    registry = get_registry()  # first call → builds everything
+    # subsequent reloads → returns cache instantly
+    app.state.llm_client = registry["llm_client"]
+    app.state.vector_store = registry["vector_store"]
+    app.state.confidence_calculator = registry["confidence_calculator"]
+    app.state.ticket_classifier = registry["ticket_classifier"]
+    app.state.workflow = registry["workflow"]
+
+    logging.info("Server is ready.")
     yield
-    print("Server has been stopped...")
+    logging.info("Server has been stopped.")
 
 
 app = FastAPI(

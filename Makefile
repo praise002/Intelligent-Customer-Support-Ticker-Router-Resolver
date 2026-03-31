@@ -23,6 +23,9 @@ up_f:
 down:
 	docker compose down
 
+down_f:
+	docker compose -f docker-compose.dev.yml down
+
 show_logs:
 	docker compose logs
 
@@ -82,5 +85,8 @@ redis_d:
 # docker compose -f docker-compose.dev.yml up  --force-recreate
 # docker compose -f docker-compose.dev.yml up  --force-recreate web
 # docker compose -f docker-compose.dev.yml up --build --force-recreate web
+# docker compose -f docker-compose.dev.yml restart celery
 # docker exec -it container_id sh
-# cat /app/src/tickets/dependencies.py
+# docker exec -it 814d267be2aa sh
+# cat /app/src/tickets/tasks.py
+docker run -it --rm -v $(pwd):/app backend-celery-1 python -c "from src.tickets.celery_config import celery_app"

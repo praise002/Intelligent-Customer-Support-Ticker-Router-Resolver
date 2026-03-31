@@ -18,6 +18,12 @@ services:
 
   redis:
     image: redis:7-alpine
+    command: >
+      redis-server
+      --appendonly yes
+      --appendfsync everysec
+      --save 60 1000
+      --save 300 100
     restart: always
     volumes:
       - redis_data:/data
@@ -61,9 +67,6 @@ services:
         - action: sync
           path: ./src           # Watch local ./src folder
           target: /app/src      # Sync to container's /app/src
-        - action: sync+restart   # ← restart uvicorn when __init__.py changes
-          path: ./src/__init__.py
-          target: /app/src/__init__.py
         - action: sync
           path: ./src
           target: /app/src

@@ -23,7 +23,8 @@ elif [ "$SERVICE_TYPE" = "celery" ] || [ "$SERVICE_TYPE" = "celery-beat" ]; then
   done
   
   if [ "$SERVICE_TYPE" = "celery" ]; then
-    exec celery -A src.tickets.celery_config.celery_app worker --loglevel=info --concurrency=3 -Q classification,processing
+    # exec celery -A src.tickets.celery_config.celery_app worker --loglevel=info --concurrency=3 -Q classification,processing
+    exec celery -A ... worker --loglevel=info --pool=asyncio -Q classification,processing
   else
     exec celery -A src.tickets.celery_config.celery_app beat --loglevel=info
   fi

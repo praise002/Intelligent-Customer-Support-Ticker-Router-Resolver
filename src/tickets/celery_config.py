@@ -4,6 +4,8 @@ from kombu import Queue
 
 from src.config import Config
 
+print("celery_config __package__:", __package__)
+
 celery_app = Celery(
 "ticket_router",
     broker=Config.REDIS_URL,
@@ -46,5 +48,9 @@ beat_schedule = {
     "compute-metrics-hourly": {
         "task": "src.tasks.compute_daily_metrics",
         "schedule": crontab(minute=0),  # Every hour at :00
+    },
+    "recover-pending-tickets": {
+        "task": "tasks.recover_pending_tickets",
+        "schedule": crontab(minute="*/30"),  # every 30 minutes
     }
 }

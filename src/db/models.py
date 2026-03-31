@@ -6,7 +6,7 @@ from pydantic import EmailStr
 from sqlalchemy import DateTime, String, func
 from sqlmodel import Column, Field, Relationship, SQLModel
 
-from src.tickets.schemas import IssueType, PlanType, RoutingDecision, Urgency
+from src.tickets.schemas import IssueType, PlanType, RoutingDecision, Status, Urgency
 
 
 class Customer(SQLModel, table=True):
@@ -57,6 +57,7 @@ class Ticket(SQLModel, table=True):
     email: EmailStr
     urgency: Urgency | None = None
     issue_type: IssueType | None = None
+    status: Status = Field(default="pending")
 
     customer_id: uuid.UUID | None = Field(
         default=None,

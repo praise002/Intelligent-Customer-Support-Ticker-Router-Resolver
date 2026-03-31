@@ -35,6 +35,10 @@ class Urgency(str, Enum):
     medium = "medium"
     low = "low"
 
+class Status(Enum):
+    pending = "pending"
+    completed = "completed"
+    failed = "failed"
 
 class IssueType(str, Enum):
     account_verification = "account_verification"
@@ -93,6 +97,7 @@ class TicketCreate(TicketBase):
 class TicketUpdate(BaseModel):
     urgency: Urgency | None = None
     issue_type: IssueType | None = None
+    status: Status | None = None
     retrieval_score: float | None = None
     generated_response: str | None = None
     llm_confidence: float | None = None

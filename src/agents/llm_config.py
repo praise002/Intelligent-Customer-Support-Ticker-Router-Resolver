@@ -1,3 +1,5 @@
+import logging
+
 from decouple import config
 
 from src.tickets.schemas import LLMProvider, SupportResponse
@@ -30,13 +32,13 @@ def auto_detect_llm_provider() -> LLMProvider:
     openai_key = config("OPENAI_API_KEY", default=None)
 
     if nvidia_key:
-        print("🔍 Auto-detected: NVIDIA API key")
+        logging.info("🔍 Auto-detected: NVIDIA API key")
         return LLMProvider.NVIDIA
     elif groq_key:
-        print("🔍 Auto-detected: Groq API key")
+        logging.info("🔍 Auto-detected: Groq API key")
         return LLMProvider.GROQ
     elif openai_key:
-        print("🔍 Auto-detected: OpenAI API key")
+        logging.info("🔍 Auto-detected: OpenAI API key")
         return LLMProvider.OPENAI
     else:
         raise ValueError(

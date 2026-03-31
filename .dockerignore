@@ -31,3 +31,4 @@ cert.crt
 cert.key
 static/
 notes.txt
+scraper.ipynb
