@@ -1,108 +1,75 @@
-import requests
-from transformers import pipeline
+from typing import Dict
 
-API_URL = "https://router.huggingface.co/hf-inference/models/facebook/bart-large-mnli"
-ISSUE_LABELS = [
-    "account_verification",  # KYC, document issues, account approval
-    "cards",  # All card issues (declined, funding, limits, creation)
-    "transfers",  # Withdrawals, transfers, delays, failed transactions
-    "integrations",  # Upwork, Fiverr, platform linking
-    "fees",  # Pricing, charges, costs
-    "account_access",  # Login, password, 2FA, security
-    "general",  # Everything else
-]
-URGENCY_LABELS = ["high", "medium", "low"]
+from langchain_core.messages import HumanMessage, SystemMessage
+
+from src.tickets.schemas import LLMProvider, TicketClassification
+
+
+def _get_llm():
+    """Lazy load LLM — only when first node runs, not at import time"""
+    from src.agents.llm_config import get_llm_client
+
+    return get_llm_client(LLMProvider.GROQ, output_model=TicketClassification)
+
+
+# Cache at module level after first call
+llm = None
+
+
+def get_llm():
+    global llm
+    if llm is None:
+        llm = _get_llm()
+    return llm
 
 
 class TicketClassifier:
-    """
-    A client for the Hugging Face Inference API to perform zero-shot classification.
-    """
+    def __init__(self, api_token):
+        self.api_token = api_token
 
-    def __init__(self, api_token: str = None, use_pipeline: bool = False):
+    def classify_local(self, model):
+        pass
+
+    def classify(subject: str, description: str) -> Dict:
+        llm = get_llm()
+        system_prompt = f"""
+            You are a support ticket classifier for Raenest, a Nigerian fintech. Classify into issue_type and urgency.
+            Ignore customer emotions (frustration, disappointment, urgency words like "urgently" unless tied to real financial harm). Focus only on factual intent and what action is needed.
+            
+            Issue types:
+            - account_verification: KYC, document uploads, account approval delays, approval status (not account lock).
+            - cards: virtual card declines, creation failures, funding, limits, failed card payments where money was deducted but the merchant was not credited.
+            - transfers: withdrawals stuck in processing, failed transfers, wrong recipient, missing funds after credit alert.
+            - integrations: linking Upwork, Fiverr, or other platforms for payouts.
+            - fees: pricing, conversion rates, withdrawal charges, hidden costs.
+            - account_access: login failure, 2FA, locked accounts, missing account details.
+            - general: app crashes, version errors, UI bugs, anything else (e.g., feature questions not covered above).
+
+            Urgency:
+            - high: customer cannot transact, money is missing/stuck, account locked,cannot transact at all, immediate deadline (e.g., subscription expires today).
+            - medium: process waiting (KYC review, card delivery) but no immediate financial loss.
+            - low: general questions about fees, how-to guides, feature requests, non‑critical info.
+            
+            PRIORITY HIERARCHY (highest to lowest): If the customer ticket has more than one issue type, prioritize the most critical one.
+
+            Domain hints:
+            - GTBank, Access, Opay = Nigerian bank transfers.
+            - "Processing" on withdrawal = transfers issue.
+            - Fee questions are always low urgency unless customer explicitly states urgency.
+
+            Return JSON only: {{"issue_type": "...", "urgency": "...", "reasoning": "short justification"}}
+            
         """
-        Initialize the classifier.
-
-        Args:
-            api_token: Your Hugging Face API token (required if use_pipeline=False)
-            use_pipeline: If True, uses local pipeline. If False, uses HF API.
+        user_message = f"""Subject: {subject}
+        
+        Question: {description}
         """
-        self.use_pipeline = use_pipeline
 
-        if use_pipeline:
-            print("Loading local pipeline...")
-            self.classifier = pipeline(
-                "zero-shot-classification", model="facebook/bart-large-mnli"
-            )
-            print("✅ Pipeline loaded successfully")
-        else:
-            if not api_token:
-                raise ValueError(
-                    "Hugging Face API token is required when use_pipeline=False"
-                )
-            self.headers = {"Authorization": f"Bearer {api_token}"}
-
-    def _query_hf_api(self, payload: dict) -> dict:
-        """Sends a request to the Hugging Face API and returns the JSON response."""
-        response = requests.post(API_URL, headers=self.headers, json=payload)
-        response.raise_for_status()
-        return response.json()
-
-    def _query_local_pipeline(self, text: str, candidate_labels: list) -> dict:
-        """
-        Uses the local pipeline to classify text.
-        """
-        result = self.classifier(text, candidate_labels)
-        print(result)
-
-        # Pipeline returns: {'labels': [...], 'scores': [...]}
-        # We convert to: [{'label': 'billing', 'score': 0.94}, ...]
-        formatted = [
-            {"label": label, "score": score}
-            for label, score in zip(result["labels"], result["scores"])
+        messages = [
+            SystemMessage(content=system_prompt),
+            HumanMessage(content=user_message),
         ]
-        return formatted
 
-    def classify(self, ticket_text: str) -> dict:
-        """
-        Classifies a support ticket to determine its issue type and urgency.
+        response: TicketClassification = llm.invoke(messages)
 
-        Args:
-            ticket_text: The combined subject and description of the ticket.
-
-        Returns:
-            A dictionary containing the predicted issue type, urgency, and their
-            respective confidence scores.
-            Example:
-            {
-                "issue_type": "billing",
-                "urgency": "high",
-                "issue_score": 0.9412,
-                "urgency_score": 0.8231
-            }
-        """
-        if self.use_pipeline:
-            print("Classifying with local pipeline...")
-            issue_output = self._query_local_pipeline(ticket_text, ISSUE_LABELS)
-            urgency_output = self._query_local_pipeline(ticket_text, URGENCY_LABELS)
-        else:
-            print("Classifying with HF API...")
-            issue_output = self._query_hf_api(
-                {
-                    "inputs": ticket_text,
-                    "parameters": {"candidate_labels": ISSUE_LABELS},
-                }
-            )
-            urgency_output = self._query_hf_api(
-                {
-                    "inputs": ticket_text,
-                    "parameters": {"candidate_labels": URGENCY_LABELS},
-                }
-            )
-
-        return {
-            "issue_type": issue_output[0]["label"],
-            "urgency": urgency_output[0]["label"],
-            "issue_score": round(issue_output[0]["score"], 4),
-            "urgency_score": round(urgency_output[0]["score"], 4),
-        }
+        return response

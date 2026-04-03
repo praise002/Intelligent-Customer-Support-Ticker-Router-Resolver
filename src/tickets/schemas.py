@@ -1,3 +1,4 @@
+from typing import Literal
 import uuid
 from datetime import datetime
 from enum import Enum
@@ -144,3 +145,11 @@ class TicketResponse(BaseModel):
     status: str
     message: str
     data: list[TicketResponseData]
+    
+class TicketClassification(BaseModel):
+    issue_type: Literal[
+        "account_verification", "cards", "transfers", 
+        "integrations", "fees", "account_access", "general"
+    ]
+    urgency: Literal["high", "medium", "low"]
+    reasoning: str

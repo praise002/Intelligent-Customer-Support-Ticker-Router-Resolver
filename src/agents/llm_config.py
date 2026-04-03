@@ -1,11 +1,15 @@
 import logging
+from typing import Optional, Type
 
 from decouple import config
+from pydantic import BaseModel
 
 from src.tickets.schemas import LLMProvider, SupportResponse
 
 
-def get_llm_client(provider: LLMProvider = None):
+def get_llm_client(
+    provider: LLMProvider = None, output_model: Optional[Type[BaseModel]] = None
+):
     """
     Get LLM client with structured output support.
     Auto-detects provider based on available API keys if not specified.
@@ -15,11 +19,11 @@ def get_llm_client(provider: LLMProvider = None):
         provider = auto_detect_llm_provider()
 
     if provider == LLMProvider.NVIDIA:
-        return _get_nvidia_llm()
+        return _get_nvidia_llm(output_model)
     elif provider == LLMProvider.GROQ:
-        return _get_groq_llm()
+        return _get_groq_llm(output_model)
     elif provider == LLMProvider.OPENAI:
-        return _get_openai_llm()
+        return _get_openai_llm(output_model)
     else:
         raise ValueError(f"Unsupported provider: {provider}")
 
@@ -46,28 +50,32 @@ def auto_detect_llm_provider() -> LLMProvider:
         )
 
 
-def _get_nvidia_llm():
-    """Initialize NVIDIA LLM with structured output"""
+def _get_nvidia_llm(output_model: Optional[Type[BaseModel]] = None):
     from langchain_nvidia_ai_endpoints import ChatNVIDIA
 
-    return ChatNVIDIA(
+    llm = ChatNVIDIA(
         model="meta/llama-3.1-70b-instruct", api_key=config("NVIDIA_API_KEY")
-    ).with_structured_output(SupportResponse)
+    )
+    if output_model:
+        llm = llm.with_structured_output(output_model)
+    return llm
 
 
-def _get_groq_llm():
-    """Initialize Groq LLM with structured output"""
+def _get_groq_llm(output_model: Optional[Type[BaseModel]] = None):
     from langchain_groq import ChatGroq
 
-    return ChatGroq(
+    llm = ChatGroq(
         api_key=config("GROQ_API_KEY"), model="llama-3.3-70b-versatile", temperature=0.1
-    ).with_structured_output(SupportResponse) 
+    )
+    if output_model:
+        llm = llm.with_structured_output(output_model)
+    return llm
 
 
-def _get_openai_llm():
-    """Initialize OpenAI LLM with structured output"""
+def _get_openai_llm(output_model: Optional[Type[BaseModel]] = None):
     from langchain_openai import ChatOpenAI
 
-    return ChatOpenAI(model="gpt-4o-mini", temperature=0.1).with_structured_output(
-        SupportResponse
-    )
+    llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.1)
+    if output_model:
+        llm = llm.with_structured_output(output_model)
+    return llm

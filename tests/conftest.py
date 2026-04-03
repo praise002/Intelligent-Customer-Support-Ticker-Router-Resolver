@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.pool import NullPool
 from sqlmodel import SQLModel
 from sqlmodel.ext.asyncio.session import AsyncSession
-from zipp import Path
+from pathlib import Path
 
 from src import app
 from src.config import Config
@@ -266,7 +266,7 @@ def test_tickets():
 def sample_ticket():
     """Single ticket for quick tests"""
     return {
-        "ticket_id": "TKT-10001",
+        "ticket_id": "10001",
         "subject": "Naira withdrawal stuck on 'processing' for 8+ hours",
         "description": "I initiated a withdrawal to my GTBank account this morning at 8am and it's still showing 'processing'. It's now 5pm. Normally withdrawals are instant. I need this money urgently. Transaction ID: WD-NGN-8472910. This has never happened before in the 2 years I've been using Raenest.",
         "issue_type": "transfers",
