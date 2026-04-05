@@ -24,6 +24,7 @@ group_map = {
     "integrations": config("INTEGRATIONS_TEAM_GROUP_ID"),  # Integration specialists
     "fees": config("GENERAL_SUPPORT_GROUP_ID"),  # General support (FAQ)
     "account_access": config("SECURITY_TEAM_GROUP_ID"),  # Security/access team
+    "technical": config("TECHNICAL_TEAM_GROUP_ID"),
     "general": config("GENERAL_SUPPORT_GROUP_ID"),  # Catch-all
 }
 

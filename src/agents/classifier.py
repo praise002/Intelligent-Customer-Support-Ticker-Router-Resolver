@@ -42,13 +42,14 @@ class TicketClassifier:
             - transfers: withdrawals stuck in processing, failed transfers, wrong recipient, missing funds after credit alert.
             - integrations: linking Upwork, Fiverr, or other platforms for payouts.
             - fees: pricing, conversion rates, withdrawal charges, hidden costs.
+            - technical — app crashes, outdated version errors, device or platform issues unrelated to account or payment
             - account_access: login failure, 2FA, locked accounts, missing account details.
-            - general: app crashes, version errors, UI bugs, anything else (e.g., feature questions not covered above).
+            - general: anything else (e.g., feature questions not covered above).
 
             Urgency:
-            - high: customer cannot transact, money is missing/stuck, account locked,cannot transact at all, immediate deadline (e.g., subscription expires today).
+            - high: customer cannot transact, money is missing/stuck, account locked, cannot transact at all, immediate deadline.
             - medium: process waiting (KYC review, card delivery) but no immediate financial loss.
-            - low: general questions about fees, how-to guides, feature requests, non‑critical info.
+            - low: general questions about fees, how-to guides, feature requests, non-critical info.
             
             PRIORITY HIERARCHY (highest to lowest): If the customer ticket has more than one issue type, prioritize the most critical one.
 

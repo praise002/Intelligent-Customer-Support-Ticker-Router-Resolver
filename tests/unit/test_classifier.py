@@ -1,9 +1,9 @@
 import json
 import logging
+from datetime import datetime
 from pathlib import Path
 
 import pytest
-from tokenizers.pre_tokenizers import FixedLength
 
 from src.agents.classifier import TicketClassifier
 
@@ -153,7 +153,8 @@ class TestClassifier:
                 )
             logging.info(mismatches)
 
-        output_file = tmp_path / "classification_results.json"
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        output_file = Path(__file__).parent / f"classification_results_{timestamp}.json"
 
         with open(output_file, "w", encoding="utf-8") as f:
             all_results.extend(failed_tickets)
@@ -178,14 +179,6 @@ class TestClassifier:
 
 
 # TODO: TO BE Fixed
-#  Classification failures:
-# E           
-# E           22: Outdated app version
-# E             - issue_type: got 'account_access', expected ['general']
-# E           
-# E           25: Account details disappearing
-# E             - urgency: got 'medium', expected ['high']
-# E           
-# E           2/35 tickets failed classification
 
+# File saying in root instead of in test file
 # File saying in root instead of in test file

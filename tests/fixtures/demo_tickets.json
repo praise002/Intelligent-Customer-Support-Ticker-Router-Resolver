@@ -85,7 +85,7 @@
   },
   {
     "ticket_id": "7",
-    "subject": "Card Creation Failed – Showing Insufficient Funds Error",
+    "subject": "Card Creation Failed - Showing Insufficient Funds Error",
     "description": "Hello,\n\nI have been trying to create a USD virtual card for the past hour but I keep getting an \"insufficient funds\" error. I have $200 in my USD wallet.\n\nI have tried 5 times and it still is not working. Do I need to pay a fee to create a card? If yes, how much? The app gives no explanation, it just shows the error message.\n\nFemi",
     "sender": "femi.graphics@yahoo.com",
     "urgency": "medium",
@@ -271,10 +271,10 @@
     "description": "I don't seems to understand this App since a day before yesterday.. most people knew that I use this app to receive money and some people sent me money into the app and till now I can't even get into the app or get the money off to do what I was ask for and now it's written ( Internal server error ) which I don't understand and other apps didn't give me such issues ⛔.. please let the support look up to this issues",
     "sender": "adegboye.emmanuel@playstore.com",
     "urgency": "high",
-    "issue_type": "account_access",
+    "issue_type": "technical",
     "created_at": "2026-03-07T08:54:27.184Z",
     "expected_classification": {
-      "issue_type": "account_access",
+      "issue_type": "technical",
       "urgency": "high"
     },
     "expected_routing": "escalate"
@@ -299,10 +299,10 @@
     "description": "I keep trying to login but I get \"your app version is outdated. please update to continue \". So I am stuck here. I have also updated but it's same thing",
     "sender": "emmanuel.ozi-yusuf@playstore.com",
     "urgency": "high",
-    "issue_type": "general",
+    "issue_type": "technical",
     "created_at": "2026-02-23T11:53:06.316Z",
     "expected_classification": {
-      "issue_type": "general",
+      "issue_type": "technical",
       "urgency": "high"
     },
     "expected_routing": "escalate"
@@ -345,7 +345,7 @@
     "created_at": "2026-01-18T20:30:24.646Z",
     "expected_classification": {
       "issue_type": ["account_access", "account_verification"], 
-      "urgency": "high"
+      "urgency": ["high", "medium"]
     },
     "expected_routing": "escalate"
   },

@@ -1,7 +1,7 @@
-from typing import Literal
 import uuid
 from datetime import datetime
 from enum import Enum
+from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
@@ -36,10 +36,12 @@ class Urgency(str, Enum):
     medium = "medium"
     low = "low"
 
+
 class Status(Enum):
     pending = "pending"
     completed = "completed"
     failed = "failed"
+
 
 class IssueType(str, Enum):
     account_verification = "account_verification"
@@ -48,6 +50,7 @@ class IssueType(str, Enum):
     integrations = "integrations"
     fees = "fees"
     account_access = "account_access"
+    technical = "technical"
     general = "general"
 
 
@@ -145,11 +148,18 @@ class TicketResponse(BaseModel):
     status: str
     message: str
     data: list[TicketResponseData]
-    
+
+
 class TicketClassification(BaseModel):
     issue_type: Literal[
-        "account_verification", "cards", "transfers", 
-        "integrations", "fees", "account_access", "general"
+        "account_verification",
+        "cards",
+        "transfers",
+        "integrations",
+        "fees",
+        "account_access",
+        "technical",
+        "general",
     ]
     urgency: Literal["high", "medium", "low"]
     reasoning: str

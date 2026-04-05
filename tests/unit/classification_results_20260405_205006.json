@@ -1,0 +1,314 @@
+[
+  {
+    "ticket_id": "1",
+    "subject": "KYC Verification Pending for 48 Hours",
+    "actual_issue_type": "account_verification",
+    "actual_urgency": "medium",
+    "expected_issue_type": "account_verification",
+    "expected_urgency": [
+      "medium",
+      "urgent"
+    ]
+  },
+  {
+    "ticket_id": "2",
+    "subject": "Naira Withdrawal Stuck on Processing for 8+ Hours",
+    "actual_issue_type": "transfers",
+    "actual_urgency": "high",
+    "expected_issue_type": "transfers",
+    "expected_urgency": "high"
+  },
+  {
+    "ticket_id": "3",
+    "subject": "Virtual Card Declined on Netflix \u2013 Balance Is Fine",
+    "actual_issue_type": "cards",
+    "actual_urgency": "high",
+    "expected_issue_type": "cards",
+    "expected_urgency": "high"
+  },
+  {
+    "ticket_id": "4",
+    "subject": "Money Credited via Notification But Not in Balance",
+    "actual_issue_type": "transfers",
+    "actual_urgency": "high",
+    "expected_issue_type": "transfers",
+    "expected_urgency": "high"
+  },
+  {
+    "ticket_id": "5",
+    "subject": "Account Locked After Receiving International Payment",
+    "actual_issue_type": "account_access",
+    "actual_urgency": "high",
+    "expected_issue_type": "account_access",
+    "expected_urgency": "high"
+  },
+  {
+    "ticket_id": "6",
+    "subject": "What Are the Fees for Withdrawing to a Nigerian Bank?",
+    "actual_issue_type": "fees",
+    "actual_urgency": "low",
+    "expected_issue_type": "fees",
+    "expected_urgency": "low"
+  },
+  {
+    "ticket_id": "7",
+    "subject": "Card Creation Failed - Showing Insufficient Funds Error",
+    "actual_issue_type": "cards",
+    "actual_urgency": "medium",
+    "expected_issue_type": "cards",
+    "expected_urgency": "medium"
+  },
+  {
+    "ticket_id": "8",
+    "subject": "Can't Login \u2013 2FA Code Not Being Received",
+    "actual_issue_type": "account_access",
+    "actual_urgency": "high",
+    "expected_issue_type": "account_access",
+    "expected_urgency": "high"
+  },
+  {
+    "ticket_id": "9",
+    "subject": "Sent $300 to the Wrong Raenest Tag \u2013 Need Urgent Reversal",
+    "actual_issue_type": "transfers",
+    "actual_urgency": "high",
+    "expected_issue_type": "transfers",
+    "expected_urgency": "high"
+  },
+  {
+    "ticket_id": "10",
+    "subject": "Virtual card declined on Netflix payment",
+    "actual_issue_type": "cards",
+    "actual_urgency": "high",
+    "expected_issue_type": "cards",
+    "expected_urgency": "high"
+  },
+  {
+    "ticket_id": "11",
+    "subject": "How do I link my Upwork account to receive payments?",
+    "actual_issue_type": "integrations",
+    "actual_urgency": "low",
+    "expected_issue_type": "integrations",
+    "expected_urgency": "low"
+  },
+  {
+    "ticket_id": "12",
+    "subject": "Money credited to account but not showing in balance",
+    "actual_issue_type": "transfers",
+    "actual_urgency": "high",
+    "expected_issue_type": "transfers",
+    "expected_urgency": "high"
+  },
+  {
+    "ticket_id": "13",
+    "subject": "Account locked after receiving payment from Germany",
+    "actual_issue_type": "account_access",
+    "actual_urgency": "high",
+    "expected_issue_type": "account_access",
+    "expected_urgency": "high"
+  },
+  {
+    "ticket_id": "14",
+    "subject": "Card creation failed - 'insufficient funds' error",
+    "actual_issue_type": "cards",
+    "actual_urgency": "medium",
+    "expected_issue_type": "cards",
+    "expected_urgency": "medium"
+  },
+  {
+    "ticket_id": "15",
+    "subject": "GBP account application rejected - need explanation",
+    "actual_issue_type": "account_verification",
+    "actual_urgency": "medium",
+    "expected_issue_type": "account_verification",
+    "expected_urgency": "medium"
+  },
+  {
+    "ticket_id": "16",
+    "subject": "Can't login to my account - 2FA not working",
+    "actual_issue_type": "account_access",
+    "actual_urgency": "high",
+    "expected_issue_type": "account_access",
+    "expected_urgency": "high"
+  },
+  {
+    "ticket_id": "17",
+    "subject": "Failed card transaction - money deducted but payment unsuccessful",
+    "actual_issue_type": "cards",
+    "actual_urgency": "high",
+    "expected_issue_type": "cards",
+    "expected_urgency": "high"
+  },
+  {
+    "ticket_id": "18",
+    "subject": "Virtual Card Declined on Netflix \u2013 Balance Is Fine",
+    "actual_issue_type": "cards",
+    "actual_urgency": "high",
+    "expected_issue_type": "cards",
+    "expected_urgency": "high"
+  },
+  {
+    "ticket_id": "19",
+    "subject": "What are the fees for withdrawing to Nigerian bank?",
+    "actual_issue_type": "fees",
+    "actual_urgency": "low",
+    "expected_issue_type": "fees",
+    "expected_urgency": "low"
+  },
+  {
+    "ticket_id": "20",
+    "subject": "Internal server error, login issues",
+    "actual_issue_type": "account_access",
+    "actual_urgency": "high",
+    "expected_issue_type": "technical",
+    "expected_urgency": "high"
+  },
+  {
+    "ticket_id": "21",
+    "subject": "Verification stuck, UI options not working",
+    "actual_issue_type": "account_verification",
+    "actual_urgency": "medium",
+    "expected_issue_type": "account_verification",
+    "expected_urgency": "medium"
+  },
+  {
+    "ticket_id": "22",
+    "subject": "Outdated app version",
+    "actual_issue_type": "technical",
+    "actual_urgency": "high",
+    "expected_issue_type": "technical",
+    "expected_urgency": "high"
+  },
+  {
+    "ticket_id": "23",
+    "subject": "can't login",
+    "actual_issue_type": "account_access",
+    "actual_urgency": "high",
+    "expected_issue_type": "account_access",
+    "expected_urgency": "high"
+  },
+  {
+    "ticket_id": "24",
+    "subject": "Payment not received",
+    "actual_issue_type": "transfers",
+    "actual_urgency": "high",
+    "expected_issue_type": "transfers",
+    "expected_urgency": "high"
+  },
+  {
+    "ticket_id": "25",
+    "subject": "Account details disappearing",
+    "actual_issue_type": "account_access",
+    "actual_urgency": "medium",
+    "expected_issue_type": [
+      "account_access",
+      "account_verification"
+    ],
+    "expected_urgency": [
+      "high",
+      "medium"
+    ]
+  },
+  {
+    "ticket_id": "26",
+    "subject": "Gift card redeeming removed",
+    "actual_issue_type": "general",
+    "actual_urgency": "low",
+    "expected_issue_type": "general",
+    "expected_urgency": "low"
+  },
+  {
+    "ticket_id": "27",
+    "subject": "GBP account request no response",
+    "actual_issue_type": "account_verification",
+    "actual_urgency": "medium",
+    "expected_issue_type": "account_verification",
+    "expected_urgency": "medium"
+  },
+  {
+    "ticket_id": "28",
+    "subject": "Can't get card",
+    "actual_issue_type": "cards",
+    "actual_urgency": "high",
+    "expected_issue_type": "cards",
+    "expected_urgency": "high"
+  },
+  {
+    "ticket_id": "29",
+    "subject": "Transfer failed, money missing",
+    "actual_issue_type": "transfers",
+    "actual_urgency": "high",
+    "expected_issue_type": "transfers",
+    "expected_urgency": "high"
+  },
+  {
+    "ticket_id": "30",
+    "subject": "Transfer fails, support unhelpful",
+    "actual_issue_type": "transfers",
+    "actual_urgency": "high",
+    "expected_issue_type": "transfers",
+    "expected_urgency": "high"
+  },
+  {
+    "ticket_id": "31",
+    "subject": "Missing payment",
+    "actual_issue_type": "transfers",
+    "actual_urgency": "high",
+    "expected_issue_type": "transfers",
+    "expected_urgency": "high"
+  },
+  {
+    "ticket_id": "32",
+    "subject": "Account suspended after funding",
+    "actual_issue_type": "account_access",
+    "actual_urgency": "high",
+    "expected_issue_type": "account_access",
+    "expected_urgency": "high"
+  },
+  {
+    "ticket_id": "33",
+    "subject": "Account suspended unfairly",
+    "actual_issue_type": "account_access",
+    "actual_urgency": "high",
+    "expected_issue_type": "account_access",
+    "expected_urgency": "high"
+  },
+  {
+    "ticket_id": "34",
+    "subject": "Account suspended after KYC",
+    "actual_issue_type": "account_access",
+    "actual_urgency": "high",
+    "expected_issue_type": "account_access",
+    "expected_urgency": "high"
+  },
+  {
+    "ticket_id": "35",
+    "subject": "Euro account request repeatedly fails, no response",
+    "actual_issue_type": "account_verification",
+    "actual_urgency": "medium",
+    "expected_issue_type": "account_verification",
+    "expected_urgency": "medium"
+  },
+  {
+    "ticket_id": "20",
+    "subject": "Internal server error, login issues",
+    "mismatches": [
+      "issue_type: got 'account_access', expected ['technical']"
+    ],
+    "actual": {
+      "ticket_id": "20",
+      "subject": "Internal server error, login issues",
+      "actual_issue_type": "account_access",
+      "actual_urgency": "high",
+      "expected_issue_type": "technical",
+      "expected_urgency": "high"
+    },
+    "expected": {
+      "issue_type": [
+        "technical"
+      ],
+      "urgency": [
+        "high"
+      ]
+    }
+  }
+]
