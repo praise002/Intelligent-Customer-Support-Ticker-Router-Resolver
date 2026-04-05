@@ -1,9 +1,6 @@
 import re
 from dataclasses import dataclass
 
-
-# from guardrails import Guard
-# from guardrails.hub import ToxicLanguage
 from src.guardrails.input_config import INPUT_GUARDRAIL_CONFIG
 
 
@@ -22,17 +19,6 @@ class InputGuardrails:
 
     def __init__(self):
         self.config = INPUT_GUARDRAIL_CONFIG
-
-        # Initialize Guardrails AI for toxicity
-        if self.config["toxicity"]["enabled"]:
-            # self.toxicity_guard = Guard().use(
-            #     ToxicLanguage(
-            #         threshold=self.config["toxicity"]["threshold"],
-            #         validation_method="sentence",
-            #         on_fail="exception",
-            #     )
-            # )
-            pass
 
     def validate_input(self, subject: str, description: str) -> InputValidation:
         """
@@ -109,23 +95,6 @@ class InputGuardrails:
                 )
 
         return InputValidation(safe=True)
-
-    def _check_toxicity(self, text: str) -> InputValidation:
-        """Check for toxic/abusive language using Guardrails AI"""
-
-        try:
-            # Guardrails AI validation
-            self.toxicity_guard.validate(text)
-            return InputValidation(safe=True)
-
-        except Exception as e:
-            # Toxicity detected
-            return InputValidation(
-                safe=False,
-                reason="Toxic or abusive language detected",
-                category="toxicity",
-                confidence=0.85,
-            )
 
     def _check_spam(self, text: str) -> InputValidation:
         """Check for spam patterns"""

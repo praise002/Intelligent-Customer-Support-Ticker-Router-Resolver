@@ -50,7 +50,7 @@ class Customer(SQLModel, table=True):
 
 class Ticket(SQLModel, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
-    ticket_id: int
+    ticket_id: int | None = None
     name: str | None = None
     subject: str
     content: str
@@ -82,6 +82,9 @@ class Ticket(SQLModel, table=True):
     judge_pass: bool | None = None
     judge_reason: str | None = None
 
+    blocked_reason: str | None = None
+    blocked_category: str | None = None
+
     created_at: Optional[datetime] = Field(
         default=None,
         sa_column=Column(
@@ -99,6 +102,6 @@ class Ticket(SQLModel, table=True):
             nullable=False,
         ),
     )
-    
+
     def __repr__(self):
         return self.customer.full_name

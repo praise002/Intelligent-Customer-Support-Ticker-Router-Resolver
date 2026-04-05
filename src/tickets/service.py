@@ -1,11 +1,51 @@
-from typing import List
+from datetime import datetime, timedelta, timezone
+from select import select
+from typing import List, Optional
 
+from sqlalchemy import func
 from sqlalchemy.orm import selectinload
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from src.db.models import Customer, Ticket
-from src.tickets.schemas import TicketCreate, TicketUpdate
+from src.tickets.schemas import Status, TicketCreate, TicketUpdate
+
+
+async def count_recently_blocked_tickets(
+    session: AsyncSession, time_window_minutes: int
+) -> int:
+    """Counts the number of tickets blocked within a given time window."""
+    time_threshold = datetime.now(timezone.utc) - timedelta(minutes=time_window_minutes)
+    statement = (
+        select(func.count(Ticket.id))
+        .where(Ticket.status == Status.blocked)
+        .where(Ticket.created_at >= time_threshold)
+    )
+    result = await session.exec(statement)
+    return result.first()
+
+
+async def block_ticket(
+    session: AsyncSession,
+    reason: str,
+    category: str,
+    ticket_id: int | None = None,
+    email: str | None = None,
+) -> Optional[Ticket]:
+    """
+    Create a ticket with "blocked" status
+    """
+
+    blocked_ticket_data = TicketCreate(
+        ticket_id=ticket_id,
+        subject=f"Blocked Ticket #{ticket_id}",
+        content=f"Blocked due to: {reason} ({category})",
+        email=email,
+        status=Status.blocked,
+        blocked_reason=reason,
+        blocked_category=category,
+    )
+    return await create_ticket(session, blocked_ticket_data)
 
 
 async def create_ticket(session: AsyncSession, ticket_data: TicketCreate) -> Ticket:
@@ -84,4 +124,5 @@ async def get_all_tickets(
 
 # uvicorn src:app --reload --port 8001
 
+# ALTER USER postgres WITH PASSWORD 'Avwunudiogba';
 # ALTER USER postgres WITH PASSWORD 'Avwunudiogba';

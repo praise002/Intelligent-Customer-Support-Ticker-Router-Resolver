@@ -52,5 +52,9 @@ beat_schedule = {
     "recover-pending-tickets": {
         "task": "tasks.recover_pending_tickets",
         "schedule": crontab(minute="*/30"),  # every 30 minutes
-    }
+    },
+    "monitor-blocked-tickets": {
+        "task": "src.tickets.tasks.monitor_blocked_tickets",
+        "schedule": crontab(minute="*/30"),  # Runs every 30 minutes
+    },
 }

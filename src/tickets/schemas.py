@@ -41,6 +41,7 @@ class Status(Enum):
     pending = "pending"
     completed = "completed"
     failed = "failed"
+    blocked = "blocked"
 
 
 class IssueType(str, Enum):

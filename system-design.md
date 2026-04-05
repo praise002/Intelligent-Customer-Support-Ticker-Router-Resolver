@@ -84,6 +84,7 @@ Customer           integration → #integration-team
   ↓                security   → #security-team
 Store in           support   → #support-team
 database           transfer   → #transfer-team
+                   technical - #technical-team
                    verification → #verification-team
 ```
 
@@ -103,7 +104,7 @@ Determines urgency and issue type for each incoming ticket.
 | **Inputs** | Email subject, body, sender identity |
 | **DB Lookup** | Customer plan type, payment history, previous tickets |
 | **Outputs** | Urgency label (high/medium/low), Issue type (billing/technical/account/feature/general) |
-| **Method** | Zero-shot text classifier (`facebook/bart-large-mnli`) — no LLM call needed |
+| **Method** | LLM |
 
 **Why lightweight?** Classify runs before the queue and is a potential single point of failure. It must be fast (milliseconds) to avoid becoming a bottleneck.
 
@@ -185,6 +186,7 @@ Routes tickets based on confidence score and issue type.
 | Technical | #tech-support (Zendesk) |
 | Account | #security-team (Zendesk) |
 | Feature | #product-team (Zendesk) |
+| Technical | #technical-team (Zendesk) |
 | General | #support-team (Zendesk) |
 
 ---

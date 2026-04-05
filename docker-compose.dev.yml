@@ -35,6 +35,8 @@ services:
 
   web:
     image: customer-support-api-dev-web:${IMAGE_TAG}
+    models:
+      - embedding-model
     build:
       context: .
       dockerfile: Dockerfile.dev
@@ -122,7 +124,13 @@ services:
       - BROKER_URL=redis://redis:6379/0
     depends_on:
       - redis
-  
+
+models:
+  embedding-model:
+    model: ai/all-minilm
+    runtime_flags:
+      - "--embeddings"          # Required for embedding models
+
 volumes:
   postgres_data: 
   redis_data:

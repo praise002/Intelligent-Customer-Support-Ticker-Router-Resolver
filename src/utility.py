@@ -1,3 +1,6 @@
+import httpx
+from decouple import config
+
 collection_urls = [
     # 1. Onboarding and Sign up (12 articles)
     "https://help.raenest.com/en/collections/3533693-onboarding-and-sign-up",
@@ -49,3 +52,25 @@ def get_priority_score(urgency: str) -> int:
     """
     priority_map = {"high": 10, "medium": 5, "low": 1}
     return priority_map.get(urgency.lower(), 5)
+
+
+
+def send_slack_alert(message: str):
+    """
+    Sends a message to a Slack channel using a webhook URL.
+    """
+    slack_webhook_url = config("SLACK_WEBHOOK_URL", default=None)
+    if not slack_webhook_url:
+        print("SLACK_WEBHOOK_URL not set. Skipping Slack notification.")
+        return
+
+    try:
+        with httpx.Client() as client:
+            response = client.post(
+                slack_webhook_url,
+                json={"text": message},
+            )
+            response.raise_for_status()
+        print("Slack alert sent successfully.")
+    except httpx.RequestError as e:
+        print(f"Error sending Slack alert: {e}")

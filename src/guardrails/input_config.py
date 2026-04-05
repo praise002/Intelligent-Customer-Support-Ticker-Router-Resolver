@@ -43,11 +43,6 @@ INPUT_GUARDRAIL_CONFIG = {
         "patterns": JAILBREAK_PATTERNS,
         "action": "block",
     },
-    "toxicity": {
-        "enabled": True,
-        "threshold": 0.7,  # 0.0 (allow all) to 1.0 (block all)
-        "action": "block",
-    },
     "spam": {
         "enabled": True,
         "patterns": SPAM_PATTERNS,

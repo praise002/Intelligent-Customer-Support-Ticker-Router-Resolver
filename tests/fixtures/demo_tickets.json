@@ -271,7 +271,7 @@
     "description": "I don't seems to understand this App since a day before yesterday.. most people knew that I use this app to receive money and some people sent me money into the app and till now I can't even get into the app or get the money off to do what I was ask for and now it's written ( Internal server error ) which I don't understand and other apps didn't give me such issues ⛔.. please let the support look up to this issues",
     "sender": "adegboye.emmanuel@playstore.com",
     "urgency": "high",
-    "issue_type": "technical",
+    "issue_type": ["technical", "account_access"],
     "created_at": "2026-03-07T08:54:27.184Z",
     "expected_classification": {
       "issue_type": "technical",

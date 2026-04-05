@@ -244,6 +244,12 @@ celery -A src.tickets.celery_config.celery_app worker --loglevel=info   -Q class
 
 ---
 
+## Resources
+[Models and Compose](https://docs.docker.com/ai/compose/models-and-compose/)
+[VLLM Docker deployment](https://inference.net/content/vllm-docker-deployment/)
+
+---
+
 ## 👨‍💻 Built By
 
 **Praise Idowu** - Backend/AI Engineer  

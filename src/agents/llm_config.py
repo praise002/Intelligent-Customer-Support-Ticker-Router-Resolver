@@ -4,7 +4,7 @@ from typing import Optional, Type
 from decouple import config
 from pydantic import BaseModel
 
-from src.tickets.schemas import LLMProvider, SupportResponse
+from src.tickets.schemas import LLMProvider
 
 
 def get_llm_client(

@@ -289,7 +289,7 @@ class VectorStoreManager:
 
 
 if __name__ == "__main__":
-    vector_store = VectorStoreManager()
+    vector_store = VectorStoreManager(
+        embedding_provider=EmbeddingProvider.SENTENCE_TRANSFORMER
+    )
     vector_store.load_and_index_documents()
-
-# To call this fn, I have to first judge it b4 adding it to the vector store
