@@ -36,7 +36,9 @@ services:
   web:
     image: customer-support-api-dev-web:${IMAGE_TAG}
     models:
-      - embedding-model
+      embedding_model:
+        endpoint_var: EMBEDDING_API_URL
+        model_var: EMBEDDING_MODEL_NAME
     build:
       context: .
       dockerfile: Dockerfile.dev
@@ -128,6 +130,7 @@ services:
 models:
   embedding-model:
     model: ai/all-minilm
+    context_size: 2048
     runtime_flags:
       - "--embeddings"          # Required for embedding models
 

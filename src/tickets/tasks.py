@@ -4,12 +4,17 @@ import logging
 from celery import Task
 
 from src.agents.classifier import TicketClassifier
+from src.constant import ISSUE_TYPE_TO_DOC_TYPES
 from src.db.main import get_session
 from src.db.models import Ticket
 from src.scripts.vector_store import VectorStoreManager
 from src.tickets.celery_config import celery_app
 from src.tickets.schemas import TicketUpdate
-from src.tickets.service import count_recently_blocked_tickets, get_ticket_by_id, update_ticket
+from src.tickets.service import (
+    count_recently_blocked_tickets,
+    get_ticket_by_id,
+    update_ticket,
+)
 from src.utility import get_priority_score, send_slack_alert
 
 logger = logging.getLogger(__name__)
@@ -135,7 +140,23 @@ async def _process_llm_async(
         self.vector_store = VectorStoreManager()
 
     query = f"{subject}. {description}"
-    rag_docs = self.vector_store.search(query, top_k=5)
+
+    issue_type = classification.get("issue_type")
+    doc_types_list = ISSUE_TYPE_TO_DOC_TYPES.get(issue_type, None)
+
+    if doc_types_list:
+        # search across multiple doc_types, merge, dedupe, re-rank
+        rag_docs = self.vector_store.search_across_doc_types(
+            query=query,
+            doc_types=doc_types_list,
+            top_k=5,
+            per_type_k=3,  # retrieve 3 per category → up to 15 candidates before re-rank
+            rerank=True,
+        )
+    else:
+        # no specific doc_type filter (e.g., IssueType.general or unknown)
+        # Use the standard search with re-ranking enabled
+        rag_docs = self.vector_store.search(query, top_k=5, rerank=True)
 
     retrieval_score = (
         sum(d["relevance_score"] for d in rag_docs) / len(rag_docs) if rag_docs else 0.0
@@ -241,7 +262,9 @@ def monitor_blocked_tickets():
 async def _check_blocked_tickets():
     """Async helper to count blocked tickets and alert if threshold exceeded."""
     async for session in get_session():
-        blocked_count = await count_recently_blocked_tickets(session, TIME_WINDOW_MINUTES)
+        blocked_count = await count_recently_blocked_tickets(
+            session, TIME_WINDOW_MINUTES
+        )
 
         if blocked_count > BLOCKED_TICKET_THRESHOLD:
             message = (

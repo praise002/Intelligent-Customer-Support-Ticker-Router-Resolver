@@ -62,7 +62,7 @@ class RaenestDocScraper:
 
     def scrape_r_docs(self) -> List[Dict]:
         """Scrape Raenest help center documentation"""
-        from src.utility import collection_urls
+        from src.constant import collection_urls
 
         print(f"🔍 Scraping {len(collection_urls)} collections...")
         print("=" * 60)

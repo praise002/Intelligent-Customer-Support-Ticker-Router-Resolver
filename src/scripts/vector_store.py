@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 from enum import Enum
 from pathlib import Path
@@ -20,6 +21,7 @@ class EmbeddingProvider(str, Enum):
     NVIDIA = "nvidia"
     SENTENCE_TRANSFORMER = "sentence_transformer"
     OPENAI = "openai"
+    DOCKER_MODEL_RUNNER = "docker_model_runner"
 
 
 class VectorStoreManager:
@@ -45,6 +47,13 @@ class VectorStoreManager:
             "chunk_size": 1000,
             "chunk_overlap": 200,
         },
+        EmbeddingProvider.DOCKER_MODEL_RUNNER: {
+            "model_name": "ai/all-minilm",
+            "dimensions": 384,
+            "max_tokens": 256,
+            "chunk_size": 950,
+            "chunk_overlap": 100,
+        },
     }
 
     def __init__(
@@ -68,8 +77,15 @@ class VectorStoreManager:
             embedding_function=self.embeddings,
             persist_directory=str(self.persist_directory),
         )
-
+        self._reranker = None
         print(f"📦 Vector store initialized with {self.embedding_provider} embeddings")
+
+    def _get_reranker(self):
+        if self._reranker is None:
+            from sentence_transformers import CrossEncoder
+
+            self._reranker = CrossEncoder("cross-encoder/ms-marco-MiniLM-L-6-v2")
+        return self._reranker
 
     def _auto_detect_provider(self) -> EmbeddingProvider:
         """
@@ -79,8 +95,12 @@ class VectorStoreManager:
         """
         nvidia_key = config("NVIDIA_API_KEY", default=None)
         openai_key = config("OPENAI_API_KEY", default=None)
+        embedding_url = os.getenv("EMBEDDING_API_URL", default=None)
 
-        if nvidia_key:
+        if embedding_url:
+            logging.info(f"Auto-detected: Docker Model Runner at {embedding_url}")
+            return EmbeddingProvider.DOCKER_MODEL_RUNNER
+        elif nvidia_key:
             print("🔍 Auto-detected: NVIDIA API key found")
             return EmbeddingProvider.NVIDIA
         elif openai_key:
@@ -106,6 +126,33 @@ class VectorStoreManager:
             raise ValueError(
                 f"Unsupported embedding provider: {self.embedding_provider}"
             )
+
+    def _init_docker_model_runner_embeddings(self):
+        """
+        Initialize embeddings via Docker Model Runner.
+        Docker injects EMBEDDING_MODEL_URL automatically when using short syntax.
+        The endpoint is OpenAI-compatible so langchain_openai works directly.
+        """
+        from langchain_openai import OpenAIEmbeddings
+
+        base_url = os.getenv("EMBEDDING_API_URL", default=None)
+
+        model_name = os.getenv("EMBEDDING_MODEL_NAME", default=None)
+
+        if not base_url:
+            raise ValueError(
+                "Docker Model Runner URL not found. "
+                "Ensure EMBEDDING_MODEL_URL is set (injected by Docker Compose models)."
+            )
+
+        logging.info(f"Connecting to Docker Model Runner at {base_url}")
+
+        return OpenAIEmbeddings(
+            model=model_name,
+            base_url=f"{base_url}/v1",  # Docker Model Runner is OpenAI compatible
+            api_key="not-needed",  # DMR doesn't require a real key
+            check_embedding_ctx_length=False,  # skip OpenAI length validation
+        )
 
     def _init_nvidia_embeddings(self):
         """Initialize NVIDIA embeddings"""
@@ -214,36 +261,145 @@ class VectorStoreManager:
         return len(all_ids)
 
     def search(
-        self, query: str, top_k: int = 5, filter_metadata: Optional[Dict] = None
+        self,
+        query: str,
+        top_k: int = 5,
+        filter_metadata: Optional[Dict] = None,
+        rerank: bool = True,
+        initial_k: int = 20,  # number of candidates to retrieve BEFORE reranking
     ) -> List[Dict]:
-        """Search for documents similar to query."""
 
+        # 1. Retrieve initial_k candidates
         if filter_metadata:
             results = self.vector_store.similarity_search_with_score(
-                query=query, k=top_k, filter=filter_metadata
+                query=query, k=initial_k, filter=filter_metadata
             )
         else:
             results = self.vector_store.similarity_search_with_score(
-                query=query, k=top_k
+                query=query, k=initial_k
             )
 
-        # Convert to structured format
+        # results is list of (Document, distance) tuples
+        candidate_docs = []
+        candidate_distances = []
+        for doc, dist in results:
+            candidate_docs.append(doc)
+            candidate_distances.append(dist)
+
+        # 2. Re-rank (if enabled)
+        if rerank and candidate_docs:
+            from sentence_transformers import CrossEncoder
+
+            reranker = CrossEncoder("cross-encoder/ms-marco-MiniLM-L-6-v2")
+            scores = reranker.predict(
+                [(query, doc.page_content) for doc in candidate_docs]
+            )
+
+            # Sort by cross-encoder score (higher is better)
+            # Keep both score, doc, and original distance
+            scored = list(zip(scores, candidate_docs, candidate_distances))
+            scored.sort(key=lambda x: x[0], reverse=True)
+
+            # Take top_k after reranking
+            final = scored[:top_k]  # list of (score, doc, distance)
+        else:
+            # No reranking: use original distances (lower is better)
+            paired = list(zip(candidate_docs, candidate_distances))
+            paired.sort(key=lambda x: x[1])  # sort by distance ascending
+            final = [(1.0, doc, dist) for doc, dist in paired[:top_k]]  # dummy score
+
+        # 3. Convert to structured format
         retrieved_docs = []
-        for doc, distance in results:
-            # Convert L2 distance to similarity score (0-1)
-            # Lower distance = higher similarity
-            similarity = 1 / (1 + distance)
+        for score, doc, dist in final:
+            if rerank:
+                # Use cross-encoder score directly (already in 0..1 range for this model)
+                relevance = round(score, 4)
+            else:
+                # Convert L2 distance to similarity (lower distance → higher similarity)
+                relevance = 1 / (1 + dist)
+                relevance = round(relevance, 4)
 
             retrieved_docs.append(
                 {
                     "content": doc.page_content,
                     "metadata": doc.metadata,
-                    "relevance_score": round(similarity, 4),
-                    "distance": round(distance, 4),
+                    "relevance_score": relevance,
+                    "distance": round(dist, 4),
+                    "reranker_score": round(score, 4) if rerank else None,
                 }
             )
 
         return retrieved_docs
+
+    def search_across_doc_types(
+        self,
+        query: str,
+        doc_types: List[str],  # list of doc_type values to search
+        top_k: int = 5,
+        per_type_k: int = 3,  # how many to retrieve per doc_type
+        rerank: bool = True,
+    ) -> List[Dict]:
+        """
+        Search across multiple doc_types, merge results, remove duplicates, then re-rank.
+
+        Args:
+            query: The search query
+            doc_types: List of document type strings (e.g., ["bank_accounts", "transfer_and_withdraw_fund"])
+            top_k: Final number of documents to return
+            per_type_k: Number of documents to retrieve from each doc_type (before merging)
+            rerank: Whether to apply cross-encoder re-ranking on the merged pool
+
+        Returns:
+            List of document dicts with keys: content, metadata, relevance_score, distance, reranker_score (if rerank=True)
+        """
+        all_candidates = []
+
+        # 1. Search each doc_type individually (without re-ranking to avoid redundant work)
+        for dt in doc_types:
+            # new: call existing search with filter_metadata, disable reranking for now
+            docs = self.search(
+                query=query,
+                top_k=per_type_k,
+                filter_metadata={"doc_type": dt},
+                rerank=False,  # we'll re-rank globally after merging
+            )
+            all_candidates.extend(docs)
+
+        # 2. Remove duplicates based on content (in case a document appears in multiple categories)
+        seen_contents = set()
+        unique_candidates = []
+        for doc in all_candidates:
+            content = doc["content"]
+            if content not in seen_contents:
+                seen_contents.add(content)
+                unique_candidates.append(doc)
+
+        # 3. Re-rank the merged pool (if enabled)
+        if rerank and unique_candidates:
+
+            reranker = self._get_reranker()
+            pairs = [(query, doc["content"]) for doc in unique_candidates]
+            scores = reranker.predict(pairs)
+
+            # Add reranker scores to each doc
+            for doc, score in zip(unique_candidates, scores):
+                doc["reranker_score"] = round(float(score), 4)
+
+            # Sort by reranker score (higher is better)
+            unique_candidates.sort(key=lambda x: x["reranker_score"], reverse=True)
+
+            # Take top_k after reranking
+            final_docs = unique_candidates[:top_k]
+
+            # Override relevance_score with the reranker score
+            for doc in final_docs:
+                doc["relevance_score"] = doc["reranker_score"]
+        else:
+            # No re-ranking: sort by original relevance_score (from L2 distance) and take top_k
+            unique_candidates.sort(key=lambda x: x["relevance_score"], reverse=True)
+            final_docs = unique_candidates[:top_k]
+
+        return final_docs
 
     def get_collection_stats(self) -> Dict:
         """Get statistics about the vector store"""

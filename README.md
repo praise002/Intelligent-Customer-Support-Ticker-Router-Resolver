@@ -247,7 +247,9 @@ celery -A src.tickets.celery_config.celery_app worker --loglevel=info   -Q class
 ## Resources
 [Models and Compose](https://docs.docker.com/ai/compose/models-and-compose/)
 [VLLM Docker deployment](https://inference.net/content/vllm-docker-deployment/)
-
+[Docker Model runner running multiple AI models](https://medium.com/@michael.hannecke/docker-model-runner-running-multiple-ai-models-on-your-device-b9d0aa721487)
+[Docker Hub](https://hub.docker.com/u/ai?page=1&search=vllm)
+[Get started with model runner](https://docs.docker.com/ai/model-runner/get-started/)
 ---
 
 ## 👨‍💻 Built By

@@ -33,6 +33,7 @@ def get_llm():
         llm = _get_llm()
     return llm
 
+
 # TODO: TOOL CALLING https://chat.deepseek.com/share/i1qvmkdn6yh4g2abqw
 # NODE 1: Generate Response
 def generate_response_node(state: TicketState) -> TicketState:
@@ -91,43 +92,22 @@ def generate_response_node(state: TicketState) -> TicketState:
 # NODE 2: Calculate Final Confidence
 _confidence_calculator = ConfidenceCalculator()
 
-# def calculate_confidence_node(state: TicketState) -> TicketState:
-#     """
-#     Implements the confidence formula:
-
-#     confidence = (
-#         0.4 * retrieval_score +
-#         0.3 * semantic_similarity +
-#         0.3 * llm_self_score
-#     )
-
-#     Updates state with:
-#     - semantic_similarity
-#     - final_confidence
-#     """
-
-#     # Calculate semantic similarity between query and retrieved docs
-
-#     calc = _confidence_calculator
-#     query = f"{state['subject']}. {state['description']}"
-
-#     semantic_similarity = calc.calculate_similarity(query, state["rag_context"])
-
-#     # Apply your formula
-#     final_confidence = (
-#         0.4 * state["retrieval_score"]
-#         + 0.3 * semantic_similarity
-#         + 0.3 * state["llm_confidence"]
-#     )
-
-#     state["semantic_similarity"] = semantic_similarity
-#     state["final_confidence"] = final_confidence
-
-#     return state
-
 
 # NODE 2: Calculate Confidence — async because NVIDIA embeddings is async
 async def calculate_confidence_node(state: TicketState) -> TicketState:
+    """
+    Implements the confidence formula:
+
+     confidence = (
+         0.4 * retrieval_score +
+         0.3 * semantic_similarity +
+         0.3 * llm_self_score
+     )
+
+     Updates state with:
+     - semantic_similarity
+     - final_confidence
+    """
     query = f"{state['subject']}. {state['description']}"
 
     semantic_similarity = await _confidence_calculator.calculate_similarity(
