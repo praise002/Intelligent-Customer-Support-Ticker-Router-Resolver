@@ -42,11 +42,17 @@ An **AI-powered ticket routing system** that:
 3. AI classifies and processes
 4. Response generated and routed
 
+
+## Case Study
+
+For a more detailed explanation of the case study, please see the [Case Study](case-study.md) document.
+
 ---
 
 ## 🏗️ Architecture
 
 For a more detailed explanation of the system architecture, please see the [System Design](system-design.md) document.
+
 ```
 Customer Ticket(webhook triggered when email received or web form submission)
       ↓
@@ -250,6 +256,8 @@ celery -A src.tickets.celery_config.celery_app worker --loglevel=info   -Q class
 [Docker Model runner running multiple AI models](https://medium.com/@michael.hannecke/docker-model-runner-running-multiple-ai-models-on-your-device-b9d0aa721487)
 [Docker Hub](https://hub.docker.com/u/ai?page=1&search=vllm)
 [Get started with model runner](https://docs.docker.com/ai/model-runner/get-started/)
+[Ticket Routing - Claude](https://platform.claude.com/docs/en/about-claude/use-case-guides/ticket-routing)
+[Claude models overview](https://www.datastudios.org/post/all-the-claude-models-available-via-api-complete-overview-august-2025-updated)
 ---
 
 ## 👨‍💻 Built By
